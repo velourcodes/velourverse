@@ -1,6 +1,6 @@
 import db_connection from "./db/index.js";
 import dotenv from "dotenv";
-dotenv.config({ path: "../.env" });
+dotenv.config();
 import { app } from "./app.js";
 
 console.log(`MONGODB_URI is: ${process.env.MONGODB_URI}`);

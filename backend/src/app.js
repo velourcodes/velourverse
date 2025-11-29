@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 
@@ -14,15 +16,14 @@ app.use(
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
-app.use(cookieParser);
+app.use(cookieParser());
 
-app.listen(process.env.PORT || 5000, () => {
-    console.log(`The app is running on port: ${process.env.PORT}`);
-});
+// Import Router
 
-app.on("app_error", (app_error) => {
-    console.error("App error", error);
-    throw app_error;
-});
+import userRoutes from "./routes/user.routes.js";
+
+// Define routes [through middleware]
+app.use("/api/v1/users", userRoutes);
+// eg of routes via middleware: http://localhost:5000/api/v1/users/register
 
 export { app };

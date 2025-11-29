@@ -26,11 +26,15 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "All fields are mandatory");
     }
 
-    const existingUser = users.findOne({
-        $or: [{ username }, { email }];
-    })
+    const existingUser = await users.findOne({
+        $or: [{ username }, { email }],
+    });
 
-    if (existingUser) throw new ApiError(409, "A user with the following email or username already exists!");
+    if (existingUser)
+        throw new ApiError(
+            409,
+            "A user with the following email or username already exists!"
+        );
 
     const avatarLocalPath = req.files?.avatar[0]?.path;
     const coverImageLocalPath = req.files?.coverImage[0].path;
@@ -40,6 +44,9 @@ const registerUser = asyncHandler(async (req, res) => {
     const avatar = await uploadOnCloudinary(avatarLocalPath);
     const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
+    console.log(avatar);
+    console.log(coverImage);
+
     if (!avatar) throw new ApiError(400, "Avatar file is required!");
 
     const user = await users.create({
@@ -47,17 +54,23 @@ const registerUser = asyncHandler(async (req, res) => {
         email,
         fullName,
         password,
-        avatar: avatar.url,
-        coverImage: coverImage?.url || ""
-    })
+        avatar: avatar,
+        coverImage: coverImage || "",
+    });
 
-    const createdUser = await users.findById(user._id).select("-password -refreshToken");
+    const createdUser = await users
+        .findById(user._id)
+        .select("-password -refreshToken");
 
-    if (!createdUser) throw new ApiError(500, "Something went wrong during registering new user!");
+    if (!createdUser)
+        throw new ApiError(
+            500,
+            "Something went wrong during registering new user!"
+        );
 
-    return res.status(201).json(
-        new ApiResponse(200, createdUser, "New user registered successfully!")
-    )
+    return res
+        .status(201)
+        .json(new ApiResponse(200, "New user registered successfully!"));
 });
 
 export { registerUser };

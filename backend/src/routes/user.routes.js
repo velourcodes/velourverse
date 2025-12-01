@@ -1,7 +1,14 @@
 import { Router } from "express";
-import { registerUser } from "../controllers/user.controller.js";
+import {
+    loginUser,
+    logoutUser,
+    registerUser,
+} from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
+import { JWTVerify } from "../middlewares/auth.middleware.js";
+
 const router = Router();
+
 router.route("/register").post(
     upload.fields([
         {
@@ -15,7 +22,8 @@ router.route("/register").post(
     ]),
     registerUser
 );
-
+router.route("/login").post(loginUser);
+router.route("/logout").post(JWTVerify, logoutUser);
 export default router;
 
 // Exporting the router means you're exporting this configured mini-app that knows about all the routes you've defined on it.

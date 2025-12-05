@@ -187,7 +187,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     console.log("Decoded Refresh Token: ", decodedToken);
     if (!(incomingRefreshToken === user.refreshToken))
-        throw new ApiError(401, "Unauthrozied Request");
+        throw new ApiError(401, "Refresh Token Expired!");
     // Expired Token - Even if user is valid, refresh and login not allowed anymore
 
     const accessToken = user.generateAccessToken();
@@ -204,7 +204,11 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         .cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options)
         .json(
-            new ApiResponse(200, null, "Access Token Refreshed Successfully")
+            new ApiResponse(
+                200,
+                { accessToken, refreshToken },
+                "Access Token Refreshed Successfully"
+            )
         );
 });
 export { registerUser, loginUser, logoutUser, refreshAccessToken };

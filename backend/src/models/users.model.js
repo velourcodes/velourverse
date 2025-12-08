@@ -39,12 +39,6 @@ const userSchema = new mongoose.Schema(
         refreshToken: {
             type: String,
         },
-        createdAt: {
-            type: Date,
-        },
-        updatedAt: {
-            type: Date,
-        },
         watchHistory: [
             {
                 type: mongoose.Schema.Types.ObjectId,

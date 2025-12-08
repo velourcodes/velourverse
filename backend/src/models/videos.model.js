@@ -41,14 +41,6 @@ const videoSchema = new mongoose.Schema(
             type: Boolean,
             default: true,
         },
-        createdAt: {
-            type: Date,
-            required: true,
-        },
-        UpdatedAt: {
-            type: Date,
-            required: true,
-        },
     },
     { timestamps: true }
 );

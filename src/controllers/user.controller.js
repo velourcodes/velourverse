@@ -191,7 +191,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     // Expired Token - Even if user is valid, refresh and login not allowed anymore
 
     const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
 
     user.refreshToken = refreshToken;
     user.save({ validateBeforeSave: false });

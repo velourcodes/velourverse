@@ -229,8 +229,21 @@ const updatePassword = asyncHandler(async (req, res) => {
     } else throw new ApiError(401, "Password updation failed!");
 });
 
+const getCurrentUser = asyncHandler(async (req, res) => {
+    const currentUser = req.user;
+    if (!currentUser) throw new ApiError(404, "User not found");
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                currentUser,
+                "Returned current user successfully"
+            )
+        );
+});
 const updateUserDetails = asyncHandler(async (req, res) => {
-    
     const { username, email, fullName } = req.body;
 
     if (!username && !email && !fullName)
@@ -261,5 +274,6 @@ export {
     logoutUser,
     refreshAccessToken,
     updatePassword,
+    getCurrentUser,
     updateUserDetails,
 };

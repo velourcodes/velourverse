@@ -217,7 +217,7 @@ const updatePassword = asyncHandler(async (req, res) => {
     // Middleware already checks for login! :D
     const { oldPassword, newPassword } = req.body;
     const user = await User.findById(req.user?.id); // auth middelware has the user already saved in body
-    const isPasswordCorrect = await user.isPasswordCorrect();
+    const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
     if (isPasswordCorrect) {
         user.password = newPassword;
         await user.save({ validateBeforeSave: false });
@@ -328,5 +328,5 @@ export {
     getCurrentUser,
     updateUserDetails,
     updateAvatar,
-    updateCoverImage
+    updateCoverImage,
 };

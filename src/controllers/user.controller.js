@@ -243,6 +243,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
             )
         );
 });
+
 const updateUserDetails = asyncHandler(async (req, res) => {
     const { username, email, fullName } = req.body;
 
@@ -268,6 +269,56 @@ const updateUserDetails = asyncHandler(async (req, res) => {
         );
 });
 
+const updateAvatar = asyncHandler(async (req, res) => {
+    const avatarLocalPath = req.file?.path;
+    console.log(avatarLocalPath);
+
+    if (!avatarLocalPath) throw new ApiError(400, "Missing avatar file");
+
+    const avatarURI = await uploadOnCloudinary(avatarLocalPath);
+    if (!avatarURI) throw new ApiError(502, "Avatar upload failed");
+    const user = await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set: {
+                avatar: avatarURI,
+            },
+        },
+        { new: true }
+    ).select("-password");
+
+    if (!user) throw new ApiError(404, "User not found");
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, user, "Avatar updated successfully"));
+});
+
+const updateCoverImage = asyncHandler(async (req, res) => {
+    const coverImageLocalPath = req.file?.path;
+    console.log(coverImageLocalPath);
+
+    if (!coverImageLocalPath) throw new ApiError(400, "Missing avatar file");
+
+    const coverImageURI = await uploadOnCloudinary(coverImageLocalPath);
+    if (!coverImageURI) throw new ApiError(502, "Cover Image upload failed");
+    const user = await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set: {
+                coverImage: coverImageURI,
+            },
+        },
+        { new: true }
+    ).select("-password");
+
+    if (!user) throw new ApiError(404, "User not found");
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, user, "Cover Image updated successfully"));
+});
+
 export {
     registerUser,
     loginUser,
@@ -276,4 +327,6 @@ export {
     updatePassword,
     getCurrentUser,
     updateUserDetails,
+    updateAvatar,
+    updateCoverImage
 };

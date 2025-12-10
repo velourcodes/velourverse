@@ -37,10 +37,10 @@ router.route("/get-current-user").post(JWTVerify, getCurrentUser);
 router.route("/update-user-details").post(JWTVerify, updateUserDetails);
 router
     .route("/update-avatar")
-    .post(JWTVerify, upload.single("avatar"), updateAvatar);
+    .patch(JWTVerify, upload.single("avatar"), updateAvatar);
 router
     .route("/update-cover-image")
-    .post(JWTVerify, upload.single("coverImage"), updateCoverImage);
+    .patch(JWTVerify, upload.single("coverImage"), updateCoverImage);
 export default router;
 
 // Exporting the router means you're exporting this configured mini-app that knows about all the routes you've defined on it.

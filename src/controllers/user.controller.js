@@ -319,6 +319,34 @@ const updateCoverImage = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, user, "Cover Image updated successfully"));
 });
 
+const deleteUser = asyncHandler(async (req, res) => {
+    const { password, confirmPassword } = req.body;
+
+    if (!(password === confirmPassword))
+        throw new ApiError(
+            400,
+            "Password confirmation failed, they must match!"
+        );
+
+    const user = await User.findByIdAndDelete(req.user?._id);
+
+    if (!user) throw new ApiError(404, "No existing user found!");
+
+    const isPasswordCorrect = user.isPasswordCorrect(password);
+
+    if (!isPasswordCorrect) throw new ApiError(401, "Invalid Password!");
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                204,
+                null,
+                "User was deleted successfully from the database"
+            )
+        );
+});
+
 export {
     registerUser,
     loginUser,
@@ -329,4 +357,5 @@ export {
     updateUserDetails,
     updateAvatar,
     updateCoverImage,
+    deleteUser,
 };

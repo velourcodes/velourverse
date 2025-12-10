@@ -9,6 +9,7 @@ import {
     updateUserDetails,
     updateAvatar,
     updateCoverImage,
+    deleteUser,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { JWTVerify } from "../middlewares/auth.middleware.js";
@@ -41,6 +42,8 @@ router
 router
     .route("/update-cover-image")
     .patch(JWTVerify, upload.single("coverImage"), updateCoverImage);
+router.route("/delete-user").delete(JWTVerify, deleteUser);
+
 export default router;
 
 // Exporting the router means you're exporting this configured mini-app that knows about all the routes you've defined on it.

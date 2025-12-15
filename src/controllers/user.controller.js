@@ -5,6 +5,8 @@ import { User } from "../models/users.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { JWTVerify } from "../middlewares/auth.middleware.js";
 import jwt from "jsonwebtoken";
+import { channel } from "process";
+import mongoose from "mongoose";
 const options = {
     httpOnly: true,
     secure: true,
@@ -347,6 +349,77 @@ const deleteUser = asyncHandler(async (req, res) => {
         );
 });
 
+const getUserChannelProfile = asyncHandler(async (req, res) => {
+    const { username } = req.params;
+
+    if (!username?.trim()) throw new ApiError(400, "Username is required!");
+
+    const channel = await User.aggregate([
+        {
+            $match: {
+                username: username?.toLowerCase(),
+            },
+        },
+        {
+            $lookup: {
+                from: "subscriptions", // unlike most places where we refer to the model using exported variable name, here we are querying with the name which it internally saves as in MongoDB
+                localField: "_id",
+                foreignField: "channel",
+                as: "subscibers",
+            },
+        },
+        {
+            $lookup: {
+                from: "subscriptions",
+                localField: "_id",
+                foreignField: "subscriber",
+                as: "subscribedTo",
+            },
+        },
+        {
+            $addFields: {
+                subscibersCount: {
+                    $size: "$subscribers",
+                },
+                channelsSubscribedTo: {
+                    $size: "$subscribedTo",
+                },
+                isSubscribed: {
+                    $cond: {
+                        if: {
+                            $in: [
+                                mongoose.Types.ObjectId(req.user._id), // value to search for
+                                "$subscribers.subscriber", // array's field to check in
+                            ],
+                        },
+                        then: true,
+                        else: false,
+                    },
+                },
+            },
+        },
+        {
+            $project: {
+                fullName: 1,
+                username: 1,
+                subscibersCount: 1,
+                channelsSubscribedTo: 1,
+                isSubscribed: 1,
+                avatar: 1,
+                coverImage: 1,
+            },
+        },
+    ]); // Note: Most aggregation pipelines return data in array of object(s) format!
+
+    if (!channel?.length) throw new ApiError(404, "Channe; not found!");
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, channel[0], "Channel returned successfully")
+        );
+});
+
 export {
     registerUser,
     loginUser,
@@ -358,4 +431,19 @@ export {
     updateAvatar,
     updateCoverImage,
     deleteUser,
+    getUserChannelProfile
 };
+
+// Input: All User documents
+//      ↓
+// $match: Filter by username (only channel owner remains)
+//      ↓
+// $lookup 1: Get all subscribers (people who subscribed to this channel)
+//      ↓
+// $lookup 2: Get all subscriptions (channels this user subscribed to)
+//      ↓
+// $addFields: Calculate counts and check if current user is subscribed
+//      ↓
+// $project: Select only needed fields
+//      ↓
+// Output: Channel profile with subscription analytics

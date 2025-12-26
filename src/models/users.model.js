@@ -30,11 +30,24 @@ const userSchema = new mongoose.Schema(
             index: true,
         },
         avatar: {
-            type: String, // To store cloudinary url here
-            required: true,
+            secure_url: {
+                type: String,
+                required: true,
+            },
+            public_id: {
+                type: String,
+                required: true,
+            },
         },
         coverImage: {
-            type: String,
+            secure_url: {
+                type: String,
+                required: true,
+            },
+            public_id: {
+                type: String,
+                required: true,
+            },
         },
         refreshToken: {
             type: String,

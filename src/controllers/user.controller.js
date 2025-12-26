@@ -2,8 +2,10 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/users.model.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
-import { JWTVerify } from "../middlewares/auth.middleware.js";
+import {
+    uploadOnCloudinary,
+    deleteFromCloudinary,
+} from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 const options = {
@@ -271,53 +273,96 @@ const updateUserDetails = asyncHandler(async (req, res) => {
 });
 
 const updateAvatar = asyncHandler(async (req, res) => {
-    const avatarLocalPath = req.file?.path;
-    console.log(avatarLocalPath);
+    const newAvatarLocalPath = req.file?.path;
+    console.log(newAvatarLocalPath);
 
-    if (!avatarLocalPath) throw new ApiError(400, "Missing avatar file");
+    if (!newAvatarLocalPath) throw new ApiError(400, "Missing avatar file");
 
-    const avatarURI = await uploadOnCloudinary(avatarLocalPath);
-    if (!avatarURI) throw new ApiError(502, "Avatar upload failed");
-    const user = await User.findByIdAndUpdate(
+    const user = await User.findById(req.user._id);
+    if (!user) throw new ApiError(404, "User not found");
+
+    const avatarObject = await uploadOnCloudinary(newAvatarLocalPath);
+    if (!avatarObject?.secure_url && !avatarObject?.public_id)
+        throw new ApiError(502, "Avatar upload failed");
+    const updatedUser = await User.findByIdAndUpdate(
         req.user._id,
         {
             $set: {
-                avatar: avatarURI,
+                avatar: {
+                    secure_url: avatarObject?.secure_url,
+                    public_id: avatarObject.public_id,
+                },
             },
         },
         { new: true }
-    ).select("-password");
+    ).select("-password -refreshToken");
+    // Update user and return response right away
 
-    if (!user) throw new ApiError(404, "User not found");
+    // Fire-and-forget (non-blocking):
+    if (user?.avatar?.public_id) {
+        deleteFromCloudinary(user.avatar.public_id) // calling with old public_id
+            .then((deletionResult) => {
+                if (!(deletionResult?.result === "ok")) {
+                    console.error("Old avatar deletion failed:", result);
+                }
+            })
+            .catch((error) => {
+                console.error("Old avatar deletion error:", error.message);
+            });
+        // No await - continue immediately
+    }
+
+    // Update user and return response right away
 
     return res
         .status(200)
-        .json(new ApiResponse(200, user, "Avatar updated successfully"));
+        .json(new ApiResponse(200, updatedUser, "Avatar updated successfully"));
 });
 
 const updateCoverImage = asyncHandler(async (req, res) => {
-    const coverImageLocalPath = req.file?.path;
-    console.log(coverImageLocalPath);
+    const newCoverImageLocalPath = req.file?.path;
+    console.log(newCoverImageLocalPath);
 
-    if (!coverImageLocalPath) throw new ApiError(400, "Missing avatar file");
+    if (!newCoverImageLocalPath)
+        throw new ApiError(400, "Missing cover image file");
 
-    const coverImageURI = await uploadOnCloudinary(coverImageLocalPath);
-    if (!coverImageURI) throw new ApiError(502, "Cover Image upload failed");
-    const user = await User.findByIdAndUpdate(
+    const user = await User.findById(req.user._id);
+    if (!user) throw new ApiError(404, "User not found");
+
+    const coverImageObject = await uploadOnCloudinary(newCoverImageLocalPath);
+    if (!coverImageObject?.secure_url && !coverImageObject?.public_id)
+        throw new ApiError(502, "Cover image upload failed");
+    const updatedUser = await User.findByIdAndUpdate(
         req.user._id,
         {
             $set: {
-                coverImage: coverImageURI,
+                coverImage: {
+                    secure_url: coverImageObject?.secure_url,
+                    public_id: coverImageObject?.public_id,
+                },
             },
         },
         { new: true }
-    ).select("-password");
+    ).select("-password -refreshToken");
+    // Update user and return response right away
 
-    if (!user) throw new ApiError(404, "User not found");
-
+    // Fire-and-forget (non-blocking):
+    if (user?.coverImage?.public_id) {
+        deleteFromCloudinary(user.coverImage.public_id) // calling with old public_id
+            .then((deletionResult) => {
+                if (!(deletionResult?.result === "ok")) {
+                    console.error("Old cover image deletion failed:", result);
+                }
+            })
+            .catch((error) => {
+                console.error("Old avatar deletion error:", error.message);
+            });
+        // No await - continue immediately
+    }
+    // Update user and return response right away
     return res
         .status(200)
-        .json(new ApiResponse(200, user, "Cover Image updated successfully"));
+        .json(new ApiResponse(200, updatedUser, "Cover image updated successfully"));
 });
 
 const deleteUser = asyncHandler(async (req, res) => {

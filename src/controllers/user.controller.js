@@ -362,7 +362,13 @@ const updateCoverImage = asyncHandler(async (req, res) => {
     // Update user and return response right away
     return res
         .status(200)
-        .json(new ApiResponse(200, updatedUser, "Cover image updated successfully"));
+        .json(
+            new ApiResponse(
+                200,
+                updatedUser,
+                "Cover image updated successfully"
+            )
+        );
 });
 
 const deleteUser = asyncHandler(async (req, res) => {

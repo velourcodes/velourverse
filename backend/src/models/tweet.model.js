@@ -11,10 +11,6 @@ const tweetSchema = new mongoose.Schema(
             required: [true, "Tweet cannot be published blank!"],
         },
     },
-    {
-        toJSON: { virtuals: true, getters: true },
-        toObject: { virtuals: true, getters: true },
-    },
     { timestamps: true }
 );
 

@@ -22,10 +22,6 @@ const playlistSchema = new mongoose.Schema(
             ref: "User",
         },
     },
-    {
-        toJSON: { virtuals: true, getters: true },
-        toObject: { virtuals: true, getters: true },
-    },
     { timestamps: true }
 );
 

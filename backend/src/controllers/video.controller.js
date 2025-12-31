@@ -4,7 +4,10 @@ import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import {
+    deleteFromCloudinary,
+    uploadOnCloudinary,
+} from "../utils/cloudinary.js";
 
 const getAllVideos = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
@@ -15,6 +18,8 @@ const getAllVideos = asyncHandler(async (req, res) => {
     let filter = new Object();
     let normalizedSortType = sortType?.toLowerCase().trim();
     let sortOptions = new Object();
+
+    filter.isPublished = true;
 
     if (userId && userId.trim()) {
         filter.owner = userId;
@@ -101,9 +106,9 @@ const publishAVideo = asyncHandler(async (req, res) => {
     if (!videoLocalPath?.trim())
         throw new ApiError(400, "Invalid path for video file!");
 
-    const videoResponse = await uploadOnCloudinary(videoLocalPath);
+    const videoResponse = await uploadOnCloudinary(videoLocalPath, "");
     console.log("Video Object is:", videoResponse);
-    if (!videoResponse.secure_url)
+    if (!videoResponse?.secure_url)
         throw new ApiError(500, "Video upload failed due to unexpected error!");
 
     if (!thumbnailLocalPath?.trim())
@@ -174,44 +179,152 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
 const getVideoById = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
-    let video_id;
-    if (mongoose.Types.ObjectId.isValid(videoId)) {
-        video_id = new mongoose.Types.ObjectId(videoId);
-    } else {
+    const userId = new mongoose.Types.ObjectId(req.user?._id);
+
+    if (!mongoose.Types.ObjectId.isValid(videoId))
         throw new ApiError(400, "Invalid video id provided by user!");
+
+    const video = await Video.findById(videoId)
+        .select("-videoFile.public_id -thumbnail.public_id")
+        .populate("owner", "username avatar.secure_url");
+
+    if (!video)
+        throw new ApiError(
+            404,
+            "No video found with the provided ID in database!"
+        );
+
+    const isOwner = video.owner[0].equals(userId);
+    if (video.isPublished) {
+        video.views = ++video.views;
+        await video.save({ validateBeforeSave: false });
+        await User.findByIdAndUpdate(userId, {
+            $addToSet: {
+                watchHistory: video._id,
+            },
+        });
+    } else {
+        if (!isOwner) {
+            throw new ApiError(403, "Access to requested video is forbidden!");
+        }
     }
 
-    const video = await Video.findById(video_id).select("-videoFile.public_id -thumbnail.public_id").populate("owner", "username avatar.secure_url");
-
-    if(!video) throw new ApiError(404, "No video found with the provided ID in database!");
-
     return res
-    .status(200)
-    .json(new ApiResponse(200, video, "Video fetched from videoId successfully"));
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                video,
+                "Video fetched from videoId successfully"
+            )
+        );
 });
 
-const updateVideo = asyncHandler(async (req, res) => {
+const updateVideoById = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
-    const { title, description, thumbnail } = req.body;
-    
-    //TODO: update video details like title, description, thumbnail
-    // Not necessary that loggedin user is the owner of video they wish to modify
+    const { title, description } = req.body;
+
+    const thumbnailLocalPath = req.file?.path;
+
+    const userId = new mongoose.Types.ObjectId(req.user._id);
+
+    if (!mongoose.Types.ObjectId.isValid(videoId))
+        throw new ApiError(400, "Invalid video id provided by user!");
+
+    const video = await Video.findById(videoId);
+
+    if (!video) throw new ApiError(404, "Video not found!");
+
+    if (!video.owner[0].equals(userId))
+        throw new ApiError(403, "Updating video details is forbidden!");
+
+    if (!title?.trim() && !description?.trim() && !thumbnailLocalPath)
+        throw new ApiError(
+            400,
+            "Atleast one field is required to update the video!"
+        );
+
+    if (title?.trim()) {
+        video.title = title;
+    }
+    if (description?.trim()) {
+        video.description = description;
+    }
+    let thumbnailResponse;
+    if (thumbnailLocalPath) {
+        thumbnailResponse = await uploadOnCloudinary(thumbnailLocalPath);
+
+        await deleteFromCloudinary(video.thumbnail.public_id, "image");
+        video.thumbnail.secure_url = thumbnailResponse.secure_url;
+        video.thumbnail.public_id = thumbnailResponse.public_id;
+    }
+    video.save({ validateBeforeSave: false });
+
+    const videoObject = video.toObject();
+    delete videoObject.thumbnail.public_id;
+    delete videoObject.videoFile.public_id;
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, videoObject, "Video updated successfully"));
+
 });
 
 const deleteVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
-    //TODO: delete video
+    const userId = new mongoose.Types.ObjectId(req.user?._id);
+
+    if (!mongoose.Types.ObjectId.isValid(videoId))
+        throw new ApiError(400, "Invalid videoId passed by user!");
+
+    const video = await Video.findByIdAndDelete(videoId);
+    if (!video) throw new ApiError(404, "No video found in database!");
+
+    const ownerId = video.owner[0];
+    if (!ownerId.equals(userId))
+        throw new ApiError(403, "Deletion is forbidden!");
+
+    await User.updateMany(
+        { watchHistory: videoId },
+        { $pull: { watchHistory: videoId } }
+    );
+    await deleteFromCloudinary(video.videoFile.public_id, "video");
+    await deleteFromCloudinary(video.thumbnail.public_id, "image");
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(204, null, "Deletion of the video was successful")
+        );
 });
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
+    const userId = new mongoose.Types.ObjectId(req.user._id);
+
+    if (!mongoose.Types.ObjectId.isValid(videoId))
+        throw new ApiError(400, "Invalid videoId passed by user!");
+
+    const video = await Video.findById(videoId);
+
+    if (!video) throw new ApiError(404, "No video found in the database!");
+
+    if (!video.owner[0].equals(userId))
+        throw new ApiError(403, "Toggling video status is forbidden!");
+
+    video.isPublished = !video.isPublished;
+    video.save({ validateBeforeSave: false });
+
+    return res
+        .status(200)
+        .json(new ApiResponse(204, null, "Publish status toggled succesfully"));
 });
 
 export {
     getAllVideos,
     publishAVideo,
     getVideoById,
-    updateVideo,
+    updateVideoById,
     deleteVideo,
     togglePublishStatus,
 };

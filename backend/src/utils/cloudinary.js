@@ -4,8 +4,8 @@ import { ApiError } from "./ApiError.js";
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_SECRET,
-    api_secret: process.env.CLOUDINARY_API_KEY,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 const uploadOnCloudinary = async (localFilePath) => {
@@ -26,11 +26,13 @@ const uploadOnCloudinary = async (localFilePath) => {
     }
 };
 
-const deleteFromCloudinary = async (publicID) => {
+const deleteFromCloudinary = async (publicID, resourceType) => {
     if (!publicID?.trim()) throw new ApiError(400, "Invalid public_id");
 
     try {
-        const deletionResult = await cloudinary.uploader.destroy(publicID);
+        const deletionResult = await cloudinary.uploader.destroy(publicID, {
+            resource_type: resourceType,
+        });
         console.log("Deletion result:", deletionResult);
 
         if (deletionResult.result === "not found") {

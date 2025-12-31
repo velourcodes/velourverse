@@ -307,7 +307,7 @@ const updateAvatar = asyncHandler(async (req, res) => {
 
     // Fire-and-forget (non-blocking):
     if (user?.avatar?.public_id) {
-        deleteFromCloudinary(user.avatar.public_id) // calling with old public_id
+        deleteFromCloudinary(user.avatar.public_id, "image") // calling with old public_id
             .then((deletionResult) => {
                 if (!(deletionResult?.result === "ok")) {
                     console.error("Old avatar deletion failed:", result);
@@ -355,7 +355,7 @@ const updateCoverImage = asyncHandler(async (req, res) => {
 
     // Fire-and-forget (non-blocking):
     if (user?.coverImage?.public_id) {
-        deleteFromCloudinary(user.coverImage.public_id) // calling with old public_id
+        deleteFromCloudinary(user.coverImage.public_id, "image") // calling with old public_id
             .then((deletionResult) => {
                 if (!(deletionResult?.result === "ok")) {
                     console.error("Old cover image deletion failed:", result);
@@ -387,13 +387,18 @@ const deleteUser = asyncHandler(async (req, res) => {
             "Password confirmation failed, they must match!"
         );
 
-    const user = await User.findByIdAndDelete(req.user?._id);
+    const user = await User.findById(req.user?._id);
 
     if (!user) throw new ApiError(404, "No existing user found!");
 
     const isPasswordCorrect = user.isPasswordCorrect(password);
 
     if (!isPasswordCorrect) throw new ApiError(401, "Invalid Password!");
+
+    await findByIdAndDelete(user?._id);
+
+    deleteFromCloudinary(user.avatar.public_id, "image");
+    deleteFromCloudinary(user.coverImage.public_id, "image");
 
     return res
         .status(200)

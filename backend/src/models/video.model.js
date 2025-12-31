@@ -54,10 +54,6 @@ const videoSchema = new mongoose.Schema(
             default: true,
         },
     },
-    {
-        toJSON: { virtuals: true, getters: true },
-        toObject: { virtuals: true, getters: true },
-    },
     { timestamps: true }
 );
 

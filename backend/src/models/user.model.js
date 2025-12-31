@@ -59,11 +59,6 @@ const userSchema = new mongoose.Schema(
             },
         ],
     },
-    {
-        toJSON: { virtuals: true, getters: true },
-        toObject: { virtuals: true, getters: true },
-        // For explicit conversions of mongoose documents to JSON/Object and handle edge cases like failed updation of a document!
-    },
     { timestamps: true }
 );
 

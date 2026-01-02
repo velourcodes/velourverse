@@ -11,10 +11,6 @@ const getVideoComments = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
     let pageValue = parseInt(page);
     let limitValue = parseInt(limit);
-    console.log(
-        "The pure non converted value of req.user._id is: ",
-        req.user?._id
-    );
 
     const userId = new mongoose.Types.ObjectId(req.user?._id);
 

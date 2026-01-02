@@ -23,11 +23,13 @@ app.use(cookieParser());
 import userRoutes from "./routes/user.routes.js";
 import videoRoutes from "./routes/video.routes.js";
 import commentRoutes from "./routes/comment.routes.js";
+import tweetRoutes from "./routes/tweet.routes.js";
 
 // Define routes [through middleware]
 app.use("/api/v1/users", userRoutes);
 // eg of routes via middleware: http://localhost:5000/api/v1/users/register
 app.use("/api/v1/video", videoRoutes);
 app.use("/api/v1/comment", commentRoutes);
+app.use("/api/v1/tweet", tweetRoutes);
 
 export { app };

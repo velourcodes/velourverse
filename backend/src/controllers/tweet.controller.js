@@ -46,6 +46,9 @@ const getUserTweets = asyncHandler(async (req, res) => {
 
     const populatedUserTweets = await Tweet.aggregate([
         { $match: { owner: userId } },
+        { $sort: { createdAt: -1, updatedAt: -1 } },
+        { $skip: (pageValue - 1) * limitValue },
+        { $limit: limitValue },
         {
             $lookup: {
                 from: "users",
@@ -61,23 +64,22 @@ const getUserTweets = asyncHandler(async (req, res) => {
             $project: {
                 content: 1,
                 ownerUsername: "$ownerData.username",
-                ownerAvatarURL: "$ownerData.avatar.url",
+                ownerAvatarURL: "$ownerData.avatar.secure_url",
             },
         },
-    ])
-        .skip((pageValue - 1) * limitValue)
-        .sort({ createdAt: -1, updatedAt: -1 })
-        .limit(limitValue);
+    ]);
 
     if (!populatedUserTweets.length)
         throw new ApiError(500, "Internal Server Error!");
+
     const pagination = {
         totalUserTweetCount: totalUserTweetCount,
         totalPages: totalPages,
         currentPage: pageValue,
-        hasPrev: pageValue < totalPages,
-        hasNext: pageValue > 1,
+        hasPrev: pageValue > 1,
+        hasNext: pageValue < totalPages,
     };
+
     return res
         .status(200)
         .json(
@@ -133,14 +135,14 @@ const deleteTweet = asyncHandler(async (req, res) => {
         throw new ApiError(403, "Updating tweet is forbidden!");
 
     await Tweet.findByIdAndDelete(tweetId);
-    
+
     return res
-    .status(200)
-    .json(new ApiResponse(204, null, "Tweet deleted successfully"))
+        .status(200)
+        .json(new ApiResponse(204, null, "Tweet deleted successfully"));
 });
 
 const deleteAllTweetsByUser = asyncHandler(async (req, res) => {
     // TODO: delete all the tweets of one single user, by taking their userId and match owner field, delete all those if present
-})
+});
 
 export { createTweet, getUserTweets, updateTweet, deleteTweet };

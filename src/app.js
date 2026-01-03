@@ -24,6 +24,7 @@ import userRoutes from "./routes/user.routes.js";
 import videoRoutes from "./routes/video.routes.js";
 import commentRoutes from "./routes/comment.routes.js";
 import tweetRoutes from "./routes/tweet.routes.js";
+import subscriptionRoutes from "./routes/subscription.routes.js";
 
 // Define routes [through middleware]
 app.use("/api/v1/users", userRoutes);
@@ -31,5 +32,6 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/video", videoRoutes);
 app.use("/api/v1/comment", commentRoutes);
 app.use("/api/v1/tweet", tweetRoutes);
+app.use("/api/v1/subscription", subscriptionRoutes);
 
 export { app };

@@ -26,6 +26,7 @@ import commentRoutes from "./routes/comment.routes.js";
 import tweetRoutes from "./routes/tweet.routes.js";
 import subscriptionRoutes from "./routes/subscription.routes.js";
 import playlistRoutes from "./routes/playlist.routes.js";
+import likeRoutes from "./routes/like.routes.js";
 // Define routes [through middleware]
 app.use("/api/v1/users", userRoutes);
 // eg of routes via middleware: http://localhost:5000/api/v1/users/register
@@ -34,5 +35,6 @@ app.use("/api/v1/comment", commentRoutes);
 app.use("/api/v1/tweet", tweetRoutes);
 app.use("/api/v1/subscription", subscriptionRoutes);
 app.use("/api/v1/playlist", playlistRoutes);
+app.use("/api/v1/like", likeRoutes);
 
 export { app };

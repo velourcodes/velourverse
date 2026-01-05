@@ -4,8 +4,7 @@ const playlistSchema = new mongoose.Schema(
     {
         name: {
             type: String,
-            required: true,
-            default: "Untitled",
+            required: [true, "Playlist name is required"],
         },
         description: {
             type: String,
@@ -25,4 +24,4 @@ const playlistSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-const Playlist = mongoose.model("Playlist", playlistSchema);
+export const Playlist = mongoose.model("Playlist", playlistSchema);

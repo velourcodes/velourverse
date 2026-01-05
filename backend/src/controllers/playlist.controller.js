@@ -89,7 +89,7 @@ const getPlaylistById = asyncHandler(async (req, res) => {
 
     const populatedPlaylist = await Playlist.findById(playlistId)
         .populate("owner", "avatar.secure_url username")
-        .populate("videos", "title thumbnail.secure_url view createdAt");
+        .populate("videos", "title thumbnail.secure_url views createdAt");
 
     if (!populatedPlaylist)
         throw new ApiError(404, "Playlist not found in the database!");

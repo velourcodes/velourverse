@@ -50,5 +50,9 @@ const deleteFromCloudinary = async (publicID, resourceType) => {
         throw new ApiError(502, "Cloudinary service unavailable");
     }
 };
+const cloudinaryPing = async() => {
+    const cloudinaryPingResponse = await cloudinary.api.ping();
 
-export { uploadOnCloudinary, deleteFromCloudinary };
+    return cloudinaryPingResponse;
+}
+export { uploadOnCloudinary, deleteFromCloudinary, cloudinaryPing };

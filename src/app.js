@@ -28,7 +28,9 @@ import subscriptionRoutes from "./routes/subscription.routes.js";
 import playlistRoutes from "./routes/playlist.routes.js";
 import likeRoutes from "./routes/like.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
+import healthcheckRoutes from "./routes/healthcheck.routes.js";
 // Define routes [through middleware]
+app.use("/api/v1/healthcheck", healthcheckRoutes);
 app.use("/api/v1/users", userRoutes);
 // eg of routes via middleware: http://localhost:5000/api/v1/users/register
 app.use("/api/v1/video", videoRoutes);

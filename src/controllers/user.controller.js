@@ -60,7 +60,10 @@ const registerUser = asyncHandler(async (req, res) => {
     if (!avatarLocalPath) throw new ApiError(400, "Avatar is required!");
 
     const avatarResponse = await uploadOnCloudinary(avatarLocalPath);
-    const coverImageResponse = await uploadOnCloudinary(coverImageLocalPath);
+    let coverImageResponse;
+    if (coverImageLocalPath) {
+        coverImageResponse = await uploadOnCloudinary(coverImageLocalPath);
+    }
 
     console.log(avatarResponse);
     console.log(coverImageResponse);
@@ -78,13 +81,13 @@ const registerUser = asyncHandler(async (req, res) => {
             public_id: avatarResponse.public_id,
         },
         coverImage: {
-            secure_url: coverImageResponse.secure_url,
-            public_id: coverImageResponse.public_id,
+            secure_url: coverImageResponse?.secure_url || undefined,
+            public_id: coverImageResponse?.public_id || undefined,
         },
     });
 
     const createdUser = await User.findById(user._id).select(
-        "-password -refreshToken -public_id"
+        "-password -refreshToken -avatar.public_id -coverImage.public_id"
     ); // public_id should remain secure from frontend - remove it!
 
     if (!createdUser)
@@ -381,7 +384,7 @@ const updateCoverImage = asyncHandler(async (req, res) => {
 const deleteUser = asyncHandler(async (req, res) => {
     const { password, confirmPassword } = req.body;
 
-    if (!(password === confirmPassword))
+    if (password?.trim() !== confirmPassword?.trim())
         throw new ApiError(
             400,
             "Password confirmation failed, they must match!"
@@ -390,12 +393,12 @@ const deleteUser = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user?._id);
 
     if (!user) throw new ApiError(404, "No existing user found!");
-
+    
     const isPasswordCorrect = user.isPasswordCorrect(password);
 
     if (!isPasswordCorrect) throw new ApiError(401, "Invalid Password!");
 
-    await findByIdAndDelete(user?._id);
+    await User.findByIdAndDelete(user?._id);
 
     deleteFromCloudinary(user.avatar.public_id, "image");
     deleteFromCloudinary(user.coverImage.public_id, "image");

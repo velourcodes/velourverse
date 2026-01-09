@@ -243,9 +243,16 @@ const updatePassword = asyncHandler(async (req, res) => {
 });
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-    const currentUser = req.user;
+    const currentUser = req.user?.toObject();
+    // Tho this req.user is an object as per typeof but, it is a special object not a plain JS obj, it is verified when i checked with .$__ hence without toObject(), deletion didnt work
+    
     if (!currentUser) throw new ApiError(404, "User not found");
+    console.log("Before public_id deletion, the currentUser is: ", currentUser);
+    delete currentUser.avatar.public_id;
+    delete currentUser.coverImage.public_id;
 
+    console.log("After public_id deletion, the currentUser is: ", currentUser);
+    
     return res
         .status(200)
         .json(

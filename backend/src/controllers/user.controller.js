@@ -247,10 +247,10 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     // Tho this req.user is an object as per typeof but, it is a special object not a plain JS obj, it is verified when i checked with .$__ hence without toObject(), deletion didnt work
 
     if (!currentUser) throw new ApiError(404, "User not found");
-    
+
     delete currentUser.avatar.public_id;
     delete currentUser.coverImage.public_id;
-    
+
     return res
         .status(200)
         .json(
@@ -398,7 +398,7 @@ const deleteUser = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user?._id);
 
     if (!user) throw new ApiError(404, "No existing user found!");
-    
+
     const isPasswordCorrect = user.isPasswordCorrect(password);
 
     if (!isPasswordCorrect) throw new ApiError(401, "Invalid Password!");
@@ -518,7 +518,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
                                     $project: {
                                         fullName: 1,
                                         username: 1,
-                                        avatar: 1,
+                                        avatarURL: "$avatar.secure_url",
                                     },
                                 },
                             ],
@@ -532,10 +532,22 @@ const getWatchHistory = asyncHandler(async (req, res) => {
                             },
                         },
                     },
+                    {
+                        $project: {
+                            title: 1,
+                            thumbnailURL: "$thumbnail.secure_url",
+                            videoFileURL: "$videoFile.secure_url",
+                            owner: 1,
+                            description: 1,
+                            duration: 1,
+                            views: 1,
+                        },
+                    },
                 ],
             },
         },
     ]);
+    console.log("Pipeline Output: ", user[0]);
 
     return res
         .status(200)

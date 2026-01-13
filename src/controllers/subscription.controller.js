@@ -14,13 +14,12 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 
     if (!mongoose.Types.ObjectId.isValid(channelId))
         throw new ApiError("Invalid channelId passed!");
-
-    const subscriptionDocument = await Subscription.findOne({
+    const deletedSubscription = await Subscription.findOneAndDelete({
         subscriber: userId,
         channel: channelId,
     });
 
-    if (!subscriptionDocument) {
+    if (!deletedSubscription) {
         if (userId.equals(channelId)) {
             throw new ApiError(403, "Toggling subscription is forbidden!");
         }
@@ -39,25 +38,18 @@ const toggleSubscription = asyncHandler(async (req, res) => {
                     "Subscription toggled successfully!"
                 )
             );
-    } else {
-        const deletedSubscription = await Subscription.findOneAndDelete({
-            subscriber: userId,
-            channel: channelId,
-        });
-
-        if (!deletedSubscription)
-            throw new ApiError(500, "Internal Server Error!");
-        subscriptionStatus = false;
-        return res
-            .status(200)
-            .json(
-                new ApiResponse(
-                    200,
-                    { subscriptionStatus: subscriptionStatus },
-                    "Subscription toggled successfully!"
-                )
-            );
     }
+
+    subscriptionStatus = false;
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                { subscriptionStatus: subscriptionStatus },
+                "Subscription toggled successfully!"
+            )
+        );
 });
 
 const getUserChannelSubscribers = asyncHandler(async (req, res) => {
@@ -115,18 +107,15 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
             },
         ]);
         console.log(subscriberCountPipeline);
-        return res
-            .status(200)
-            .json(
-                new ApiResponse(
-                    200,
-                    {
-                        subscriberCount:
-                            subscriberCountPipeline[0].subscriberCount,
-                    },
-                    "User channel subscribers fetched successfully"
-                )
-            );
+        return res.status(200).json(
+            new ApiResponse(
+                200,
+                {
+                    subscriberCount: subscriberCountPipeline[0].subscriberCount,
+                },
+                "User channel subscribers fetched successfully"
+            )
+        );
     }
     // Improved logic in this commit is - if user is not the channel's owner then we will only show them the subscriberCount (no details) just matching YouTube's logic ;)
 });

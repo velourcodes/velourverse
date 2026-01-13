@@ -9,12 +9,15 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 // Add playlist like also later when project is fully completed and tested - a good idea it is!
 const toggleVideoLike = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
+
     const userId = req.user?._id;
     if (!videoId?.trim())
         throw new ApiError(400, "videoId cannot be left blank!");
 
     if (!mongoose.Types.ObjectId.isValid(videoId))
         throw new ApiError(400, "Invalid videoId passed!");
+
+    let videoLikeStatus;
 
     const videoLike = await Like.findOneAndDelete({
         video: videoId,
@@ -31,32 +34,44 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
             video: videoId,
             likedBy: userId,
         });
-        if (!newVideoLike) throw new ApiError(500, "Internal Server Error!");
+
+        videoLikeStatus = true;
 
         return res
             .status(201)
             .json(
                 new ApiResponse(
                     201,
-                    newVideoLike,
+                    { newVideoLike, videoLikeStatus },
                     "Toggled video like successfully!"
                 )
             );
     }
+
+    videoLikeStatus = false;
+
     return res
         .status(200)
-        .json(new ApiResponse(200, null, "Toggled video like successfully!"));
+        .json(
+            new ApiResponse(
+                200,
+                { videoLikeStatus },
+                "Toggled video like successfully!"
+            )
+        );
 });
 
 const toggleCommentLike = asyncHandler(async (req, res) => {
     const { commentId } = req.params;
-
+    
     const userId = req.user?._id;
     if (!commentId?.trim())
         throw new ApiError(400, "commentId cannot be left blank!");
 
     if (!mongoose.Types.ObjectId.isValid(commentId))
         throw new ApiError(400, "Invalid commentId passed!");
+
+    let commentLikeStatus;
 
     const commentLike = await Like.findOneAndDelete({
         comment: commentId,
@@ -74,21 +89,28 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
             likedBy: userId,
         });
 
-        if (!newCommentLike) throw new ApiError(500, "Internal Server Error!");
+        commentLikeStatus = true;
 
         return res
             .status(201)
             .json(
                 new ApiResponse(
                     201,
-                    newCommentLike,
+                    { newCommentLike, commentLikeStatus },
                     "Toggled comment like successfully!"
                 )
             );
     }
+    commentLikeStatus = false;
     return res
         .status(200)
-        .json(new ApiResponse(200, null, "Toggled comment like successfully!"));
+        .json(
+            new ApiResponse(
+                200,
+                { commentLikeStatus },
+                "Toggled comment like successfully!"
+            )
+        );
 });
 
 const toggleTweetLike = asyncHandler(async (req, res) => {
@@ -100,6 +122,8 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
 
     if (!mongoose.Types.ObjectId.isValid(tweetId))
         throw new ApiError(400, "Invalid tweetId passed!");
+
+    let tweetLikeStatus;
 
     const tweetLike = await Like.findOneAndDelete({
         tweet: tweetId,
@@ -117,21 +141,28 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
             likedBy: userId,
         });
 
-        if (!newTweetLike) throw new ApiError(500, "Internal Server Error!");
+        tweetLikeStatus = true;
 
         return res
             .status(201)
             .json(
                 new ApiResponse(
                     201,
-                    newTweetLike,
+                    { newTweetLike, tweetLikeStatus },
                     "Toggled tweet like successfully!"
                 )
             );
     }
+    tweetLikeStatus = false;
     return res
         .status(200)
-        .json(new ApiResponse(200, null, "Toggled tweet like successfully!"));
+        .json(
+            new ApiResponse(
+                200,
+                { tweetLikeStatus },
+                "Toggled tweet like successfully!"
+            )
+        );
 });
 
 const getLikedVideos = asyncHandler(async (req, res) => {

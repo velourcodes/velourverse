@@ -20,6 +20,10 @@ const toggleSubscription = asyncHandler(async (req, res) => {
     });
 
     if (!deletedSubscription) {
+        const doesChannelExist = await User.exists({ _id: channelId });
+        if (!doesChannelExist)
+            throw new ApiError(404, "Channel not found in the database!");
+
         if (userId.equals(channelId)) {
             throw new ApiError(403, "Toggling subscription is forbidden!");
         }

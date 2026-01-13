@@ -4,6 +4,7 @@
     "type": "module",
     "main": "app.js",
     "scripts": {
+        "start": "node backend/src/index.js",
         "dev": "nodemon backend/src/index.js"
     },
     "repository": {

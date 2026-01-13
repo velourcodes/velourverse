@@ -29,6 +29,13 @@ import likeRoutes from "./routes/like.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import healthcheckRoutes from "./routes/healthcheck.routes.js";
 // Define routes [through middleware]
+app.get('/api/v1/productionHealthCheck', (req, res) => {
+  console.log('Simple production health check called');
+  res.status(200).json({ 
+    status: 'ok',
+    timestamp: new Date().toISOString() 
+  });
+});
 app.use("/api/v1/healthcheck", healthcheckRoutes);
 app.use("/api/v1/users", userRoutes);
 // eg of routes via middleware: http://localhost:5000/api/v1/users/register

@@ -1,0 +1,45 @@
+{
+    "name": "velourtube",
+    "version": "1.0.0",
+    "type": "module",
+    "main": "app.js",
+    "scripts": {
+        "dev": "nodemon backend/src/index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/velourcodes/velourtube.git"
+    },
+    "keywords": [
+        "velourcodes",
+        "velourtube",
+        "youtube",
+        "twitter",
+        "youtube-twitter",
+        "videotube",
+        "affan"
+    ],
+    "author": "velourcodes",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/velourcodes/velourtube/issues"
+    },
+    "homepage": "https://github.com/velourcodes/velourtube#readme",
+    "description": "This project is mainly a clone (not exactly) of YouTube and Twitter where users can interact with eachother through tweets and also upload, like, comment on videos etc.",
+    "devDependencies": {
+        "nodemon": "^3.1.11",
+        "prettier": "^3.7.4"
+    },
+    "dependencies": {
+        "bcrypt": "^6.0.0",
+        "cloudinary": "^2.8.0",
+        "cookie-parser": "^1.4.7",
+        "cors": "^2.8.5",
+        "dotenv": "^17.2.3",
+        "express": "^5.2.1",
+        "jsonwebtoken": "^9.0.3",
+        "mongoose": "^9.1.3",
+        "mongoose-aggregate-paginate-v2": "^1.1.4",
+        "multer": "^2.0.2"
+    }
+}

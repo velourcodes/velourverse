@@ -35,7 +35,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
             .json(
                 new ApiResponse(
                     200,
-                    subscriptionStatus,
+                    { newSubscription, subscriptionStatus },
                     "Subscription toggled successfully!"
                 )
             );
@@ -53,7 +53,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
             .json(
                 new ApiResponse(
                     200,
-                    subscriptionStatus,
+                    { subscriptionStatus: subscriptionStatus },
                     "Subscription toggled successfully!"
                 )
             );
@@ -68,43 +68,67 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
 
     if (!mongoose.Types.ObjectId.isValid(channelId))
         throw new ApiError("Invalid channelId passed!");
-
-    const populatedChannelSubscribers = await Subscription.aggregate([
-        {
-            $match: { channel: new mongoose.Types.ObjectId (channelId) },
-        },
-        {
-            $lookup: {
-                from: "users",
-                localField: "subscriber",
-                foreignField: "_id",
-                as: "subscriberData",
-            },
-        },
-        {
-            $unwind: "$subscriberData",
-        },
-        {
-            $project: {
-                subscriberUsername: "$subscriberData.username",
-                subscriberAvatarURL: "$subscriberData.avatar.secure_url",
-            },
-        },
-    ]);
-
-    if (!populatedChannelSubscribers.length)
-        throw new ApiError(404, "No subscribers found in the database!");
-
-    return res.status(200).json(
-        new ApiResponse(
-            200,
+    if (new mongoose.Types.ObjectId(channelId).equals(req.user?._id)) {
+        const populatedChannelSubscribers = await Subscription.aggregate([
             {
-                userChannelSubscribers: populatedChannelSubscribers,
-                subscriberCount: populatedChannelSubscribers.length,
+                $match: { channel: new mongoose.Types.ObjectId(channelId) },
             },
-            "User channel subscribers fetched successfully"
-        )
-    );
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "subscriber",
+                    foreignField: "_id",
+                    as: "subscriberData",
+                },
+            },
+            {
+                $unwind: "$subscriberData",
+            },
+            {
+                $project: {
+                    subscriberUsername: "$subscriberData.username",
+                    subscriberAvatarURL: "$subscriberData.avatar.secure_url",
+                },
+            },
+        ]);
+
+        if (!populatedChannelSubscribers.length)
+            throw new ApiError(404, "No subscribers found in the database!");
+
+        return res.status(200).json(
+            new ApiResponse(
+                200,
+                {
+                    userChannelSubscribers: populatedChannelSubscribers,
+                    subscriberCount: populatedChannelSubscribers.length,
+                },
+                "User channel subscribers fetched successfully"
+            )
+        );
+    } else {
+        const subscriberCountPipeline = await Subscription.aggregate([
+            {
+                $match: { channel: new mongoose.Types.ObjectId(channelId) },
+            },
+            {
+                $count: "subscriberCount",
+            },
+        ]);
+        console.log(subscriberCountPipeline);
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(
+                    200,
+                    {
+                        subscriberCount:
+                            subscriberCountPipeline[0].subscriberCount,
+                    },
+                    "User channel subscribers fetched successfully"
+                )
+            );
+    }
+    // Improved logic in this commit is - if user is not the channel's owner then we will only show them the subscriberCount (no details) just matching YouTube's logic ;)
 });
 
 const getSubscribedChannels = asyncHandler(async (req, res) => {
@@ -115,6 +139,9 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
 
     if (!mongoose.Types.ObjectId.isValid(subscriberId))
         throw new ApiError("Invalid subscriberId passed!");
+
+    if (!new mongoose.Types.ObjectId(subscriberId).equals(req.user?._id))
+        throw new ApiError(403, "Viewing subscribed channels is Forbidden!");
 
     const populatedChannelList = await Subscription.aggregate([
         {

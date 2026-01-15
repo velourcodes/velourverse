@@ -131,6 +131,12 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
     const video = await Video.findById(videoId);
     if (!video) throw new ApiError(404, "Video not found in the database!");
 
+    const doesVideoExistInPlaylist = (
+        await Playlist.find({ _id: playlistId, videos: { $in: videoId } })
+    ).length;
+    if (doesVideoExistInPlaylist)
+        throw new ApiError(409, "Cannot add duplicates to a playlist!");
+
     await playlist.videos.push(video._id); // $push and push() are both provided by mongoose only just use case is different
     await playlist.save();
 
@@ -170,6 +176,12 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
 
     const video = await Video.findById(videoId);
     if (!video) throw new ApiError(404, "Video not found in the database!");
+
+    const doesVideoExistInPlaylist = (
+        await Playlist.find({ _id: playlistId, videos: { $in: videoId } })
+    ).length;
+    if (!doesVideoExistInPlaylist)
+        throw new ApiError(404, "Video was not in playlist");
 
     await playlist.videos.pull(video._id);
     await playlist.save();

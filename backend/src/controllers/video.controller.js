@@ -70,7 +70,11 @@ const getAllVideos = asyncHandler(async (req, res) => {
     const currentPageVideos = await Video.find(filter)
         .sort(sortOptions)
         .skip((pageValue - 1) * limitValue)
-        .limit(limitValue);
+        .limit(limitValue)
+        .populate({
+            path: "owner",
+            select: "username avatar.secure_url -_id",
+        });
 
     if (!currentPageVideos.length) {
         throw new ApiError(404, "No videos found!");
@@ -267,7 +271,6 @@ const updateVideoById = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(new ApiResponse(200, videoObject, "Video updated successfully"));
-
 });
 
 const deleteVideo = asyncHandler(async (req, res) => {

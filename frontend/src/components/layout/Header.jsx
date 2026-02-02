@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import './Header.css';
 
@@ -8,6 +8,7 @@ const Header = () => {
     const { user, logout } = useAuth();
     const { theme, setTheme } = useTheme();
     const navigate = useNavigate();
+    const location = useLocation();
     const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
     const dropdownRef = React.useRef(null);
 
@@ -41,9 +42,11 @@ const Header = () => {
                 <div className="header-right">
                     {user ? (
                         <div className="user-profile-actions" ref={dropdownRef}>
-                            <button className="btn-upload-header" onClick={() => navigate('/upload')}>
-                                Upload Video
-                            </button>
+                            {location.pathname !== '/my-videos' && (
+                                <button className="btn-upload-header" onClick={() => navigate('/upload')}>
+                                    Upload Video
+                                </button>
+                            )}
 
                             <div className="profile-dropdown-container">
                                 <div

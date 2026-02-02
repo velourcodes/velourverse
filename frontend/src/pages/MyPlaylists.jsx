@@ -87,31 +87,31 @@ const MyPlaylists = () => {
 
     return (
         <div className="my-playlists-container">
-            <div className="playlists-header">
-                <div className="header-content">
-                    <h1>My Playlists</h1>
-                    <p>Organize your favorite videos</p>
+            <div className="my-playlists-header-premium">
+                <h1 className="gradient-text">My Playlist</h1>
+                <div className="playlists-meta-animated">
+                    <span className="count-badge">{playlists.length}</span>
+                    <span className="count-text">{playlists.length === 1 ? 'playlist' : 'playlists'} created</span>
                 </div>
-                <button className="btn-primary" onClick={() => setShowCreateModal(true)}>
-                    + Create Playlist
-                </button>
+                <div className="header-actions">
+                    <button className="btn-primary-solid" onClick={() => setShowCreateModal(true)}>
+                        + Create Playlist
+                    </button>
+                </div>
             </div>
 
             {playlists.length === 0 ? (
                 <div className="empty-state">
                     <div className="empty-icon">📚</div>
                     <h3>No playlists yet</h3>
-                    <p>Create your first playlist to organize your videos</p>
-                    <button className="btn-primary-small" onClick={() => setShowCreateModal(true)}>
-                        Create Playlist
-                    </button>
+                    <p>Create your first playlist to organize your favorite videos</p>
                 </div>
             ) : (
                 <div className="playlists-grid">
                     {playlists.map((playlist) => (
                         <div key={playlist._id} className="playlist-card">
                             <div className="playlist-thumbnail">
-                                <div className="playlist-count">
+                                <div className="playlist-count-label">
                                     {playlist.playlistVideoCount} videos
                                 </div>
                             </div>

@@ -1,41 +1,77 @@
-.search-bar {
+.search-bar-premium {
     display: flex;
     align-items: center;
-    background-color: var(--color-input-bg);
+    background-color: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: 25px;
-    padding: 0.5rem 1rem;
+    border-radius: 12px;
     width: 100%;
     max-width: 600px;
     margin: 0 auto 2rem;
-    transition: all 0.3s ease;
+    padding: 2px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    box-shadow: var(--shadow-sm);
 }
 
-.search-bar:focus-within {
+.search-bar-premium:focus-within {
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px rgba(255, 77, 109, 0.2);
+    background-color: var(--color-bg-dark);
+    box-shadow: 0 0 0 4px rgba(255, 77, 109, 0.1), var(--shadow-md);
+    transform: translateY(-1px);
 }
 
-.search-input {
+.search-icon-wrapper {
+    padding: 0 0.8rem 0 1.2rem;
+    display: flex;
+    align-items: center;
+    color: var(--color-text-muted);
+}
+
+.search-icon-svg {
+    width: 18px;
+    height: 18px;
+}
+
+.search-input-premium {
     flex: 1;
     background: transparent;
     border: none;
     color: var(--color-text-main);
     font-size: 1rem;
-    padding: 0.5rem;
+    padding: 0.8rem 0.5rem;
     outline: none;
+    font-weight: 500;
 }
 
-.search-button {
-    background: transparent;
+.search-input-premium::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.7;
+}
+
+.search-button-premium {
+    background: var(--color-primary);
+    color: white;
     border: none;
     cursor: pointer;
-    font-size: 1.2rem;
-    padding: 0.5rem;
-    color: var(--color-text-muted);
-    transition: color 0.3s ease;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 0.7rem 1.4rem;
+    border-radius: 10px;
+    margin: 4px;
+    transition: all 0.2s ease;
 }
 
-.search-button:hover {
-    color: var(--color-primary);
+.search-button-premium:hover {
+    background: var(--color-primary-hover);
+    transform: scale(1.02);
+}
+
+.search-button-premium:active {
+    transform: scale(0.98);
+}
+
+@media (max-width: 480px) {
+    .search-button-premium {
+        padding: 0.7rem 1rem;
+    }
 }

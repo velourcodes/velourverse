@@ -1,0 +1,100 @@
+.platform-switcher-container {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.platform-switcher-pill {
+    background: rgba(22, 31, 46, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 6px;
+    border-radius: 20px;
+    display: flex;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    pointer-events: auto;
+    width: fit-content;
+    overflow: hidden;
+}
+
+.platform-option {
+    padding: 0.8rem 1.5rem;
+    border-radius: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    z-index: 2;
+    transition: all 0.3s ease;
+    min-width: 110px;
+    justify-content: center;
+}
+
+.platform-option.active {
+    color: white;
+}
+
+.platform-option:not(.active) {
+    color: var(--color-text-muted);
+}
+
+.platform-option:not(.active):hover {
+    color: var(--color-text-main);
+}
+
+.platform-icon {
+    font-size: 1.2rem;
+}
+
+.platform-name {
+    font-weight: 750;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.platform-slider-bg {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: calc(50% - 6px);
+    height: calc(100% - 12px);
+    background: var(--color-primary);
+    border-radius: 16px;
+    z-index: 1;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+}
+
+/* Light mode overrides */
+body.light-mode .platform-switcher-pill {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .platform-option.active {
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .platform-switcher-container {
+        bottom: 1.5rem;
+    }
+
+    .platform-option {
+        padding: 0.6rem 1rem;
+        min-width: 90px;
+    }
+
+    .platform-name {
+        font-size: 0.75rem;
+    }
+}

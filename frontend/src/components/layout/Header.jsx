@@ -4,7 +4,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import './Header.css';
 
-const Header = () => {
+const Header = ({ context }) => {
     const { user, logout } = useAuth();
     const { theme, setTheme } = useTheme();
     const navigate = useNavigate();
@@ -37,12 +37,14 @@ const Header = () => {
             <div className="header-content">
                 <Link to="/" className="logo-section">
                     <img src="/logo.svg" alt="Velour Logo" className="header-logo" />
-                    <span className="logo gradient-text">Velour Verse</span>
+                    <span className="logo gradient-text">
+                        Velour {context === 'vox' ? 'Vox' : 'Vortex'}
+                    </span>
                 </Link>
                 <div className="header-right">
                     {user ? (
                         <div className="user-profile-actions" ref={dropdownRef}>
-                            {location.pathname !== '/my-videos' && (
+                            {context === 'vortex' && location.pathname !== '/my-videos' && (
                                 <button className="btn-upload-header" onClick={() => navigate('/upload')}>
                                     Upload Video
                                 </button>

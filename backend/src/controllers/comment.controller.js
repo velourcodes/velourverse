@@ -12,7 +12,9 @@ const getVideoComments = asyncHandler(async (req, res) => {
     let pageValue = parseInt(page);
     let limitValue = parseInt(limit);
 
-    const userId = new mongoose.Types.ObjectId(req.user?._id);
+    const userId = req.user?._id
+        ? new mongoose.Types.ObjectId(req.user?._id)
+        : null;
 
     if (!videoId?.trim())
         throw new ApiError(400, "videoId cannot be left blank!");
@@ -62,21 +64,50 @@ const getVideoComments = asyncHandler(async (req, res) => {
                 localField: "owner",
                 foreignField: "_id",
                 as: "ownerData",
+                pipeline: [
+                    {
+                        $project: {
+                            ownerId: "$_id",
+                            ownerUsername: "$username",
+                            ownerAvatarURL: "$avatar.secure_url",
+                        },
+                    },
+                ],
             },
         },
         // {
         //     $unwind: "$ownerData",
         // },
         {
+            $lookup: {
+                from: "likes",
+                localField: "_id",
+                foreignField: "comment",
+                as: "commentLikesData",
+            },
+        },
+        {
             $addFields: {
-                owner: { $first: "$ownerData" },
+                ownerDetails: { $first: "$ownerData" },
+                commentLikeCount: { $size: "$commentLikesData" },
+                isLikedByUser: {
+                    $cond: [
+                        { $ne: [userId, null] },
+                        { $in: [userId, "$commentLikesData.likedBy"] },
+                        false,
+                    ],
+                },
             },
         },
         {
             $project: {
                 content: 1,
-                ownerUsername: "$owner.username",
-                ownerAvatarURL: "$owner.avatar.url",
+                ownerId: "$ownerDetails.ownerId",
+                ownerAvatarURL: "$ownerDetails.ownerAvatarURL",
+                ownerUsername: "$ownerDetails.ownerUsername",
+                commentLikeCount: 1,
+                isLikedByUser: 1,
+                createdAt: 1,
             },
         },
     ]);
@@ -172,6 +203,7 @@ const addComment = asyncHandler(async (req, res) => {
                 content: 1,
                 video: 1,
                 owner: 1,
+                createdAt: 1,
             },
         },
     ]);

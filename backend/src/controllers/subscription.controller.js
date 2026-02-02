@@ -1,4 +1,5 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
+import { User } from "../models/user.model.js";
 import { Subscription } from "../models/subscription.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -10,10 +11,10 @@ const toggleSubscription = asyncHandler(async (req, res) => {
     let subscriptionStatus;
 
     if (!channelId?.trim())
-        throw new ApiError("channelId cannot be left blank!");
+        throw new ApiError(400, "channelId cannot be left blank!");
 
     if (!mongoose.Types.ObjectId.isValid(channelId))
-        throw new ApiError("Invalid channelId passed!");
+        throw new ApiError(400, "Invalid channelId passed!");
     const deletedSubscription = await Subscription.findOneAndDelete({
         subscriber: userId,
         channel: channelId,
@@ -60,10 +61,10 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
     const { channelId } = req.params;
 
     if (!channelId?.trim())
-        throw new ApiError("channelId cannot be left blank!");
+        throw new ApiError(400, "channelId cannot be left blank!");
 
     if (!mongoose.Types.ObjectId.isValid(channelId))
-        throw new ApiError("Invalid channelId passed!");
+        throw new ApiError(400, "Invalid channelId passed!");
     if (new mongoose.Types.ObjectId(channelId).equals(req.user?._id)) {
         const populatedChannelSubscribers = await Subscription.aggregate([
             {
@@ -128,10 +129,10 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
     const { subscriberId } = req.params;
 
     if (!subscriberId?.trim())
-        throw new ApiError("subscriberId cannot be left blank!");
+        throw new ApiError(400, "subscriberId cannot be left blank!");
 
     if (!mongoose.Types.ObjectId.isValid(subscriberId))
-        throw new ApiError("Invalid subscriberId passed!");
+        throw new ApiError(400, "Invalid subscriberId passed!");
 
     if (!new mongoose.Types.ObjectId(subscriberId).equals(req.user?._id))
         throw new ApiError(403, "Viewing subscribed channels is Forbidden!");

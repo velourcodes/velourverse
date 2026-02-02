@@ -46,9 +46,12 @@ const registerUser = asyncHandler(async (req, res) => {
         );
     console.log(req.files);
 
-    const avatarLocalPath = req.files?.avatar[0]?.path;
-    let coverImageLocalPath;
+    let avatarLocalPath;
+    if (req.files?.avatar) {
+        avatarLocalPath = req.files?.avatar[0]?.path;
+    }
 
+    let coverImageLocalPath;
     if (
         req.files &&
         Array.isArray(req.files.coverImage) &&
@@ -57,9 +60,11 @@ const registerUser = asyncHandler(async (req, res) => {
         coverImageLocalPath = req.files.coverImage[0].path;
     }
 
-    if (!avatarLocalPath) throw new ApiError(400, "Avatar is required!");
+    let avatarResponse;
+    if (avatarLocalPath) {
+        avatarResponse = await uploadOnCloudinary(avatarLocalPath);
+    }
 
-    const avatarResponse = await uploadOnCloudinary(avatarLocalPath);
     let coverImageResponse;
     if (coverImageLocalPath) {
         coverImageResponse = await uploadOnCloudinary(coverImageLocalPath);
@@ -68,17 +73,14 @@ const registerUser = asyncHandler(async (req, res) => {
     console.log(avatarResponse);
     console.log(coverImageResponse);
 
-    if (!avatarResponse.secure_url && !avatarResponse.public_id)
-        throw new ApiError(400, "Avatar file is required!");
-
     const user = await User.create({
         username: username.toLowerCase(),
         email,
         fullName,
         password,
         avatar: {
-            secure_url: avatarResponse.secure_url,
-            public_id: avatarResponse.public_id,
+            secure_url: avatarResponse?.secure_url || undefined,
+            public_id: avatarResponse?.public_id || undefined,
         },
         coverImage: {
             secure_url: coverImageResponse?.secure_url || undefined,
@@ -534,6 +536,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
                     },
                     {
                         $project: {
+                            _id: 1,
                             title: 1,
                             thumbnailURL: "$thumbnail.secure_url",
                             videoFileURL: "$videoFile.secure_url",

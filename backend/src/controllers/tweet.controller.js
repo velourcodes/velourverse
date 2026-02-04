@@ -24,6 +24,61 @@ const createTweet = asyncHandler(async (req, res) => {
         .json(new ApiResponse(201, tweet, "Tweet added successfully"));
 });
 
+const viewTweets = asyncHandler(async (req, res) => {
+    const { page = 1, limit = 10 } = req.query;
+    let pageValue = parseInt(page);
+    let limitValue = parseInt(limit);
+
+    if (limitValue <= 0 || limitValue >= 1000) limitValue = 10;
+    const totalPages = Math.ceil(totalUserTweetCount / limitValue);
+    if (pageValue <= 0 || pageValue > totalPages) pageValue = 1;
+
+    const populatedTweets = await Tweet.aggregate([
+        { $sort: { createdAt: -1, updatedAt: -1 } },
+        { $skip: (pageValue - 1) * limitValue },
+        { $limit: limitValue },
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "ownerData",
+            },
+        },
+        {
+            $unwind: "$ownerData",
+        },
+        {
+            $project: {
+                content: 1,
+                ownerUsername: "$ownerData.username",
+                ownerAvatarURL: "$ownerData.avatar.secure_url",
+                createdAt: 1,
+            },
+        },
+    ]);
+
+    if (!populatedUserTweets.length)
+        throw new ApiError(500, "Internal Server Error!");
+
+    const pagination = {
+        totalPages: totalPages,
+        currentPage: pageValue,
+        hasPrev: pageValue > 1,
+        hasNext: pageValue < totalPages,
+    };
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                { populatedTweets, pagination },
+                "Tweets fetched successfully"
+            )
+        );
+});
+
 const getUserTweets = asyncHandler(async (req, res) => {
     const userId = req.user?._id;
 
@@ -65,6 +120,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
                 content: 1,
                 ownerUsername: "$ownerData.username",
                 ownerAvatarURL: "$ownerData.avatar.secure_url",
+                createdAt: 1,
             },
         },
     ]);
@@ -152,9 +208,10 @@ const deleteAllTweetsByUser = asyncHandler(async (req, res) => {
 
     const userId = req.user?._id;
 
-    const deletionResult = await Tweet.deleteMany({owner: userId});
+    const deletionResult = await Tweet.deleteMany({ owner: userId });
 
-    if(!deletionResult.deletedCount) throw new ApiError(404, "No tweets found by user!");
+    if (!deletionResult.deletedCount)
+        throw new ApiError(404, "No tweets found by user!");
 
     return res
         .status(200)
@@ -163,6 +220,7 @@ const deleteAllTweetsByUser = asyncHandler(async (req, res) => {
 
 export {
     createTweet,
+    viewTweets,
     getUserTweets,
     updateTweet,
     deleteTweet,

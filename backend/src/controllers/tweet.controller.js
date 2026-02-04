@@ -88,6 +88,7 @@ const viewTweets = asyncHandler(async (req, res) => {
         throw new ApiError(500, "Internal Server Error!");
 
     const pagination = {
+        totalTweetCount: totalTweetCount,
         totalPages: totalPages,
         currentPage: pageValue,
         hasPrev: pageValue > 1,

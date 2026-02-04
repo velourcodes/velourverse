@@ -12,6 +12,7 @@ import WatchHistory from './pages/WatchHistory';
 import VideoView from './pages/VideoView';
 import { ThemeProvider } from './context/ThemeContext';
 import { FeedbackProvider } from './context/FeedbackContext';
+import './VoxTheme.css';
 import Dashboard from './pages/Dashboard';
 import Settings from './pages/Settings';
 import LikedVideos from './pages/LikedVideos';
@@ -22,6 +23,10 @@ import ChannelProfile from './pages/ChannelProfile';
 import UploadVideo from './pages/UploadVideo';
 import MyPlaylists from './pages/MyPlaylists';
 import PlaylistManagement from './pages/PlaylistManagement';
+import MyTweets from './pages/MyTweets';
+import CreateTweet from './pages/CreateTweet';
+import EditTweet from './pages/EditTweet';
+import DeleteAllTweets from './pages/DeleteAllTweets';
 
 function App() {
   return (
@@ -51,6 +56,10 @@ function App() {
                   <Route path="/upload" element={<UploadVideo />} />
                   <Route path="/my-playlists" element={<MyPlaylists />} />
                   <Route path="/playlist/:playlistId" element={<PlaylistManagement />} />
+                  <Route path="/my-tweets-vox" element={<MyTweets />} />
+                  <Route path="/create-tweet" element={<CreateTweet />} />
+                  <Route path="/edit-tweet/:tweetId" element={<EditTweet />} />
+                  <Route path="/delete-all-tweets" element={<DeleteAllTweets />} />
                 </Route>
               </Route>
             </Routes>

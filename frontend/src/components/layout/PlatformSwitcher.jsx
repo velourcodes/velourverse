@@ -2,13 +2,36 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './PlatformSwitcher.css';
 
-const PlatformSwitcher = () => {
+const PlatformSwitcher = ({ context }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Determine the active platform based on the current path
-    const isVox = location.pathname.startsWith('/tweets');
-    const activePlatform = isVox ? 'vox' : 'vortex';
+    // Determine the active platform based on prop or current path
+    const isVoxPath = location.pathname.startsWith('/tweets');
+    const activePlatform = context || (isVoxPath ? 'vox' : 'vortex');
+    const isVox = activePlatform === 'vox';
+
+    // Auto-hide logic
+    const [isVisible, setIsVisible] = React.useState(true);
+    const lastScrollY = React.useRef(0);
+
+    React.useEffect(() => {
+        const controlSwitcher = () => {
+            if (typeof window !== 'undefined') {
+                if (window.scrollY > lastScrollY.current && window.scrollY > 100) {
+                    // Scrolling DOWN and not at top
+                    setIsVisible(false);
+                } else {
+                    // Scrolling UP or at top
+                    setIsVisible(true);
+                }
+                lastScrollY.current = window.scrollY;
+            }
+        };
+
+        window.addEventListener('scroll', controlSwitcher);
+        return () => window.removeEventListener('scroll', controlSwitcher);
+    }, []);
 
     const handleSwitch = (platform) => {
         if (platform === 'vortex') {
@@ -19,7 +42,13 @@ const PlatformSwitcher = () => {
     };
 
     return (
-        <div className="platform-switcher-container">
+        <div
+            className={`platform-switcher-container ${isVox ? 'vox-mode' : ''}`}
+            style={{
+                transform: `translateX(-50%) ${isVisible ? 'translateY(0)' : 'translateY(200%)'}`,
+                transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+            }}
+        >
             <div className="platform-switcher-pill">
                 <div
                     className={`platform-option ${activePlatform === 'vortex' ? 'active' : ''}`}

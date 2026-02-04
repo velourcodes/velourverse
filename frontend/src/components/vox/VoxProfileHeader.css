@@ -1,0 +1,136 @@
+.vox-profile-header {
+    background-color: var(--vox-surface);
+    border-bottom: 1px solid var(--vox-divider);
+    position: relative;
+}
+
+.vox-cover-container {
+    height: 200px;
+    background-color: var(--vox-divider);
+    overflow: hidden;
+}
+
+.vox-cover-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.vox-cover-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--vox-bg-primary) 0%, var(--vox-surface) 100%);
+}
+
+.vox-profile-info-container {
+    padding: 0 16px 16px 16px;
+    position: relative;
+}
+
+.vox-profile-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: -60px;
+    /* Half of avatar height */
+    margin-bottom: 16px;
+}
+
+.vox-profile-avatar-container {
+    position: relative;
+}
+
+.vox-profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid var(--vox-bg-primary);
+    /* Border matching primary background */
+    background-color: var(--vox-surface);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vox-profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.vox-profile-actions {
+    padding-bottom: 10px;
+}
+
+.vox-follow-btn {
+    padding: 10px 24px;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 15px;
+    transition: var(--vox-transition-smooth);
+}
+
+.vox-follow-btn.unfollowed {
+    background-color: var(--vox-brand-gold);
+    color: #080C16;
+    /* Midnight Ink */
+    border: none;
+}
+
+.vox-follow-btn.following {
+    background-color: transparent;
+    border: 1.5px solid var(--vox-brand-gold);
+    color: var(--vox-brand-gold);
+}
+
+.vox-profile-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.vox-profile-display-name {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--vox-text-primary);
+}
+
+.vox-profile-handle {
+    margin: 0;
+    color: var(--vox-text-secondary);
+    font-size: 15px;
+}
+
+.vox-profile-bio {
+    margin: 12px 0;
+    font-size: 15px;
+    line-height: 1.4;
+    color: var(--vox-text-primary);
+}
+
+.vox-profile-stats {
+    display: flex;
+    gap: 20px;
+    margin-top: 8px;
+}
+
+.vox-stat {
+    display: flex;
+    gap: 4px;
+    font-size: 14px;
+}
+
+.vox-stat-value {
+    font-weight: 700;
+    color: var(--vox-text-primary);
+}
+
+color: var(--vox-text-secondary);
+}
+
+/* Hide bio as per v1 requirements */
+.vox-profile-bio {
+    display: none;
+}

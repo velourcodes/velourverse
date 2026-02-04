@@ -1,194 +1,258 @@
-.feed-container {
+/* Animations moved to VoxTheme.css */
+
+.vox-feed-container {
+    max-width: 700px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-    max-width: 800px;
-    margin: 0 auto;
+    animation: voxFadeIn 0.5s ease-out;
 }
 
-.feed-header {
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
-.feed-header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-    background: linear-gradient(to right, #fff, var(--color-text-muted));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.feed-header p {
-    color: var(--color-text-muted);
-    font-size: 1.1rem;
-}
-
-.tweet-composer {
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
-    padding: 1.5rem;
+.vox-feed-content {
+    padding: 24px 0;
     display: flex;
-    gap: 1rem;
+    flex-direction: column;
+    gap: 24px;
 }
 
-.composer-avatar {
+.vox-composer-card {
+    background-color: var(--vox-surface);
+    border: 1px solid var(--vox-divider);
+    border-radius: var(--vox-radius-main);
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.vox-composer-card:focus-within {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(212, 175, 55, 0.15);
+    border-color: var(--vox-brand-gold);
+}
+
+.vox-composer-header {
+    display: flex;
+    gap: 16px;
+}
+
+.vox-composer-avatar {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background-color: var(--color-input-bg);
+    background-color: var(--vox-bg-primary);
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 24px;
     flex-shrink: 0;
-    font-size: 1.5rem;
+    overflow: hidden;
+    border: 2px solid var(--vox-divider);
+    transition: border-color 0.3s;
 }
 
-.composer-form {
-    flex: 1;
+.vox-composer-avatar:hover {
+    border-color: var(--vox-brand-gold);
+}
+
+.vox-composer-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.vox-composer-form {
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 12px;
 }
 
-.tweet-input {
-    background-color: var(--color-input-bg);
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    padding: 1rem;
-    font-size: 1rem;
-    color: var(--color-text-main);
+.vox-composer-input {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--vox-divider);
+    color: var(--vox-text-primary);
+    font-size: 18px;
+    padding: 12px 0;
+    resize: none;
+    min-height: 80px;
     font-family: inherit;
-    resize: vertical;
-    min-height: 100px;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.tweet-input:focus {
+.vox-composer-input:focus {
     outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(255, 68, 91, 0.2);
+    border-bottom-color: var(--vox-brand-gold);
+    background: linear-gradient(to bottom, transparent 95%, rgba(212, 175, 55, 0.05));
 }
 
-.tweet-input::placeholder {
-    color: rgba(255, 255, 255, 0.3);
+.vox-composer-input::placeholder {
+    color: var(--vox-text-secondary);
+    opacity: 0.6;
 }
 
-.composer-actions {
+.vox-composer-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-top: 8px;
 }
 
-.char-count {
-    color: var(--color-text-muted);
-    font-size: 0.9rem;
+.vox-char-count {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--vox-text-secondary);
 }
 
-.tweets-list {
+.vox-btn-gold {
+    padding: 10px 28px;
+    border-radius: 9999px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border: none;
+    background: linear-gradient(135deg, var(--vox-brand-gold), #B8860B);
+    color: #080C16;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vox-btn-gold:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+    filter: brightness(1.1);
+}
+
+.vox-btn-gold:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.vox-btn-gold:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--vox-surface);
+    /* Greyed out */
+    color: var(--vox-text-secondary);
+    box-shadow: none;
+    border: 1px solid var(--vox-divider);
+}
+
+.vox-tweets-list {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 16px;
 }
 
-.tweet-card {
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
-    padding: 1.5rem;
+/* Loading, Error, Empty States */
+.vox-loading {
     display: flex;
-    gap: 1rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 0;
+    color: var(--vox-brand-gold);
+    gap: 16px;
+    font-weight: 500;
+}
+
+.vox-loading::after {
+    content: '';
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(212, 175, 55, 0.2);
+    border-top-color: var(--vox-brand-gold);
+    border-radius: 50%;
+    animation: voxSpin 1s infinite linear;
+}
+
+.vox-error {
+    text-align: center;
+    padding: 40px;
+    color: var(--vox-brand-red);
+    background: rgba(230, 74, 94, 0.1);
+    border-radius: var(--vox-radius-main);
+    border: 1px solid rgba(230, 74, 94, 0.2);
+}
+
+.vox-empty {
+    text-align: center;
+    padding: 64px 24px;
+    color: var(--vox-text-secondary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Owner Badge */
+.vox-owner-badge {
+    margin-left: auto;
+    background: linear-gradient(135deg, var(--vox-brand-gold), #B8860B);
+    color: #080C16;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
+}
+
+/* Pagination */
+.vox-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 32px 0;
+    margin-top: 20px;
+    border-top: 1px solid var(--vox-divider);
+}
+
+.vox-btn-pagination {
+    background-color: var(--vox-surface);
+    border: 1px solid var(--vox-divider);
+    color: var(--vox-text-primary);
+    padding: 10px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
     transition: all 0.3s ease;
 }
 
-.tweet-card:hover {
-    border-color: var(--color-primary);
-    box-shadow: 0 4px 8px rgba(255, 68, 91, 0.1);
+.vox-btn-pagination:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    border-color: transparent;
 }
 
-.tweet-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background-color: var(--color-input-bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 1.5rem;
+.vox-btn-pagination:not(:disabled):hover {
+    background: var(--vox-brand-gold);
+    color: #080C16;
+    border-color: var(--vox-brand-gold);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+    transform: translateY(-2px);
 }
 
-.tweet-content {
-    flex: 1;
-    min-width: 0;
-}
-
-.tweet-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
-    flex-wrap: wrap;
-}
-
-.tweet-author {
-    font-weight: 600;
-    color: var(--color-text-main);
-}
-
-.tweet-username {
-    color: var(--color-text-muted);
-    font-size: 0.9rem;
-}
-
-.tweet-time {
-    color: var(--color-text-muted);
-    font-size: 0.9rem;
-}
-
-.tweet-text {
-    color: var(--color-text-main);
-    margin: 0 0 1rem 0;
-    line-height: 1.5;
-}
-
-.tweet-actions {
-    display: flex;
-    gap: 2rem;
-}
-
-.tweet-action {
-    background: transparent;
-    border: none;
-    color: var(--color-text-muted);
-    font-size: 0.9rem;
-    padding: 0.25rem 0.5rem;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.tweet-action:hover {
-    color: var(--color-primary);
+.vox-page-info {
+    color: var(--vox-text-secondary);
+    font-family: monospace;
+    font-size: 14px;
+    background: var(--vox-surface);
+    padding: 4px 12px;
+    border-radius: 99px;
+    border: 1px solid var(--vox-divider);
 }
 
 @media (max-width: 768px) {
-    .feed-container {
-        max-width: 100%;
+    .vox-feed-container {
+        padding: 0;
     }
 
-    .feed-header h1 {
-        font-size: 2rem;
-    }
-
-    .tweet-composer {
-        padding: 1rem;
-    }
-
-    .composer-avatar,
-    .tweet-avatar {
-        width: 40px;
-        height: 40px;
-        font-size: 1.25rem;
+    .vox-composer-card {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        padding: 16px;
     }
 }

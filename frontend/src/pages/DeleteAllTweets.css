@@ -1,0 +1,158 @@
+.vox-delete-all-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 48px 24px;
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vox-delete-all-card {
+    background-color: var(--vox-surface);
+    border: 1px solid var(--vox-divider);
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    box-shadow: var(--vox-elevation-low);
+}
+
+.vox-delete-all-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.vox-warning-icon {
+    font-size: 48px;
+    color: #ff4444;
+    margin-bottom: 16px;
+}
+
+.vox-delete-all-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--vox-text-primary);
+    margin: 0 0 8px 0;
+}
+
+.vox-delete-all-header p {
+    font-size: 14px;
+    color: var(--vox-text-secondary);
+    margin: 0;
+}
+
+.vox-warning-box {
+    background-color: rgba(255, 68, 68, 0.05);
+    border: 1px solid rgba(255, 68, 68, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 32px;
+}
+
+.vox-warning-box h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ff4444;
+    margin: 0 0 12px 0;
+}
+
+.vox-warning-box p {
+    font-size: 14px;
+    color: var(--vox-text-primary);
+    margin: 0 0 8px 0;
+    line-height: 1.6;
+}
+
+.vox-warning-box p:last-child {
+    margin-bottom: 0;
+}
+
+.vox-delete-all-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.vox-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.vox-form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--vox-text-primary);
+}
+
+.vox-input {
+    width: 100%;
+    background-color: var(--vox-bg-primary);
+    border: 1px solid var(--vox-divider);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--vox-text-primary);
+    font-size: 14px;
+    font-family: inherit;
+    transition: var(--vox-transition-smooth);
+}
+
+.vox-input:focus {
+    outline: none;
+    border-color: var(--vox-brand-gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.vox-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.vox-error-message {
+    background-color: rgba(230, 74, 94, 0.1);
+    border: 1px solid var(--vox-brand-red);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--vox-brand-red);
+    font-size: 14px;
+    text-align: center;
+}
+
+.vox-delete-all-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.vox-delete-all-actions button {
+    flex: 1;
+}
+
+.vox-btn-danger {
+    background-color: #ff4444;
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.vox-btn-danger:hover:not(:disabled) {
+    background-color: #cc0000;
+}
+
+.vox-btn-danger:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .vox-delete-all-container {
+        padding: 24px 16px;
+    }
+
+    .vox-delete-all-card {
+        padding: 24px 16px;
+    }
+}

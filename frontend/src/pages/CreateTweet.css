@@ -1,0 +1,137 @@
+.vox-create-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 48px 24px;
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vox-create-card {
+    background-color: var(--vox-surface);
+    border: 1px solid var(--vox-divider);
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    box-shadow: var(--vox-elevation-low);
+}
+
+.vox-create-header {
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.vox-create-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--vox-text-primary);
+    margin: 0 0 8px 0;
+}
+
+.vox-create-header p {
+    font-size: 16px;
+    color: var(--vox-text-secondary);
+    margin: 0;
+}
+
+.vox-create-form {
+    display: flex;
+    gap: 16px;
+}
+
+.vox-create-avatar {
+    flex-shrink: 0;
+}
+
+.vox-create-avatar img,
+.vox-create-avatar .vox-avatar-placeholder {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--vox-bg-primary);
+    font-size: 24px;
+}
+
+.vox-create-input-wrapper {
+    flex: 1;
+}
+
+.vox-create-textarea {
+    width: 100%;
+    background-color: var(--vox-bg-primary);
+    border: 1px solid var(--vox-divider);
+    border-radius: 12px;
+    padding: 16px;
+    color: var(--vox-text-primary);
+    font-size: 16px;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 120px;
+    transition: var(--vox-transition-smooth);
+}
+
+.vox-create-textarea:focus {
+    outline: none;
+    border-color: var(--vox-brand-gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.vox-create-textarea::placeholder {
+    color: var(--vox-text-secondary);
+}
+
+.vox-create-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.vox-char-count {
+    color: var(--vox-text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.vox-create-error {
+    color: var(--vox-brand-red);
+    font-size: 14px;
+    flex: 1;
+    text-align: center;
+}
+
+.vox-create-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.vox-btn-cancel {
+    background-color: transparent;
+    border: 1px solid var(--vox-divider);
+    color: var(--vox-text-primary);
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.vox-btn-cancel:hover {
+    background-color: var(--vox-bg-primary);
+}
+
+@media (max-width: 768px) {
+    .vox-create-container {
+        padding: 24px 16px;
+    }
+
+    .vox-create-card {
+        padding: 24px 16px;
+    }
+}

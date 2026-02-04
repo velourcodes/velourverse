@@ -1,19 +1,17 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext';
+
 import './Home.css';
 
 const Home = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
-    const { theme } = useTheme();
+
 
     return (
         <div className="home-container">
-            <div className="theme-indicator">
-                {theme === 'light' ? '☀️' : theme === 'dark' ? '🌙' : '💻'}
-            </div>
+
 
             <div className="welcome-text">
                 <img src="/logo.svg" alt="Velour Logo" className="home-logo" />

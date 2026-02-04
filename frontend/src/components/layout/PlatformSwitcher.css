@@ -73,6 +73,12 @@
     box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
 }
 
+/* Vox Mode Gold Gradient */
+.platform-switcher-container.vox-mode .platform-slider-bg {
+    background: linear-gradient(135deg, #FFD700 0%, #D4AF37 100%);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+}
+
 /* Light mode overrides */
 body.light-mode .platform-switcher-pill {
     background: rgba(255, 255, 255, 0.8);

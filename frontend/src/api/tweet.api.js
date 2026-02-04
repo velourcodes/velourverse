@@ -10,6 +10,11 @@ export const getUserTweets = () => {
     return api.get('/tweet/get-user-tweets');
 };
 
+// Get All Tweets (Feed)
+export const getAllTweets = (page = 1, limit = 10) => {
+    return api.get(`/tweet/view-tweets?page=${page}&limit=${limit}`);
+};
+
 // Update Tweet
 export const updateTweet = (tweetId, data) => {
     return api.patch(`/tweet/update-tweet/${tweetId}`, data);
@@ -21,6 +26,6 @@ export const deleteTweet = (tweetId) => {
 };
 
 // Delete All Tweets By User
-export const deleteAllTweetsByUser = () => {
-    return api.delete('/tweet/delete-all-tweets-by-user');
+export const deleteAllTweetsByUser = (data) => {
+    return api.delete('/tweet/delete-all-tweets-by-user', { data });
 };

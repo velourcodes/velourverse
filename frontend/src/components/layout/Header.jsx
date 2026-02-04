@@ -37,16 +37,22 @@ const Header = ({ context }) => {
             <div className="header-content">
                 <Link to="/" className="logo-section">
                     <img src="/logo.svg" alt="Velour Logo" className="header-logo" />
-                    <span className="logo gradient-text">
+                    <span className={`logo gradient-text ${context === 'vox' ? 'vox-logo' : ''}`}>
                         Velour {context === 'vox' ? 'Vox' : 'Vortex'}
                     </span>
                 </Link>
                 <div className="header-right">
                     {user ? (
                         <div className="user-profile-actions" ref={dropdownRef}>
-                            {context === 'vortex' && location.pathname !== '/my-videos' && (
+                            {context === 'vortex' && location.pathname !== '/my-videos' && location.pathname !== '/' && (
                                 <button className="btn-upload-header" onClick={() => navigate('/upload')}>
                                     Upload Video
+                                </button>
+                            )}
+
+                            {context === 'vox' && location.pathname !== '/create-tweet' && location.pathname !== '/' && (
+                                <button className="btn-upload-header vox-btn" onClick={() => navigate('/create-tweet')}>
+                                    Vox It
                                 </button>
                             )}
 
@@ -77,13 +83,23 @@ const Header = ({ context }) => {
 
                                         <div className="dropdown-divider"></div>
 
-                                        <Link to={`/channel/${user.username}`} className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>
-                                            <span className="item-icon">👤</span> Your Channel
+                                        <Link
+                                            to={context === 'vox' ? '/my-tweets-vox' : `/channel/${user.username}`}
+                                            className="dropdown-item"
+                                            onClick={() => setIsDropdownOpen(false)}
+                                        >
+                                            <span className="item-icon">👤</span> {context === 'vox' ? 'Your Profile' : 'Your Channel'}
                                         </Link>
-                                        <Link to="/dashboard" className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>
-                                            <span className="item-icon">📊</span> Channel Dashboard
-                                        </Link>
-                                        <Link to="/settings" className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>
+                                        {context !== 'vox' && (
+                                            <Link to="/dashboard" className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>
+                                                <span className="item-icon">📊</span> Channel Dashboard
+                                            </Link>
+                                        )}
+                                        <Link
+                                            to={context === 'vox' ? '/settings?context=vox' : '/settings'}
+                                            className="dropdown-item"
+                                            onClick={() => setIsDropdownOpen(false)}
+                                        >
                                             <span className="item-icon">⚙️</span> Settings
                                         </Link>
 

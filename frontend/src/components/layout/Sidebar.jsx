@@ -15,16 +15,14 @@ const Sidebar = ({ context }) => {
                 {context === 'vox' ? (
                     <>
                         <Link to="/tweets" className={`nav-link ${isActive('/tweets') ? 'active' : ''}`}>
-                            <FiHome className="nav-icon" /> Home Feed
+                            <FiHome className="nav-icon" /> Home
                         </Link>
-                        <Link to="/explore" className={`nav-link ${isActive('/explore') ? 'active' : ''}`}>
-                            <FiCompass className="nav-icon" /> Explore
+                        <Link to="/my-tweets-vox" className={`nav-link ${isActive('/my-tweets-vox') ? 'active' : ''}`}>
+                            <FiVideo className="nav-icon" /> My Voxes
                         </Link>
-                        <Link to="/notifications" className={`nav-link ${isActive('/notifications') ? 'active' : ''}`}>
-                            <FiBell className="nav-icon" /> Notifications
-                        </Link>
-                        <Link to="/trending" className={`nav-link ${isActive('/trending') ? 'active' : ''}`}>
-                            <FiTrendingUp className="nav-icon" /> Trending
+                        <div className="sidebar-divider"></div>
+                        <Link to="/delete-all-tweets" className={`nav-link ${isActive('/delete-all-tweets') ? 'active' : ''}`}>
+                            <FiTrendingUp className="nav-icon" /> Delete All
                         </Link>
                     </>
                 ) : (

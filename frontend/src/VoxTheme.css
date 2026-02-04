@@ -1,0 +1,166 @@
+/* Vox Section Theme - Velvet Style */
+
+:root {
+    /* Master Color Palette - Dark Mode (Midnight Velvet) */
+    --vox-bg-primary: #080C16;
+    --vox-surface: #121826;
+    --vox-brand-gold: #D4AF37;
+    --vox-brand-red: #E64A5E;
+    --vox-text-primary: #F2F4F7;
+    --vox-text-secondary: #8E9AAF;
+    --vox-divider: rgba(212, 175, 55, 0.15);
+    --vox-accent-glow: rgba(212, 175, 55, 0.3);
+
+    /* Spacing & Elevation */
+    --vox-spacing-unit: 8px;
+    --vox-radius-main: 16px;
+    --vox-radius-sm: 12px;
+
+    /* Transitions */
+    --vox-transition-smooth: 0.2s ease-out;
+    --vox-transition-spring: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Global Animations */
+@keyframes voxFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes voxPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(212, 175, 55, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
+    }
+}
+
+@keyframes voxSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Light Mode Overrides (Warm Alabaster) */
+body.light-mode {
+    --vox-bg-primary: #F9F7F2;
+    --vox-surface: #FFFFFF;
+    --vox-brand-gold: #B8860B;
+    /* Deep Ochre */
+    --vox-brand-red: #D13447;
+    /* Crimson Rose */
+    --vox-text-primary: #080C16;
+    --vox-text-secondary: #5C667A;
+    --vox-divider: rgba(8, 12, 22, 0.08);
+    --vox-accent-glow: rgba(184, 134, 11, 0.15);
+}
+
+/* Vox Context Application */
+.vox-context {
+    background-color: var(--vox-bg-primary);
+    color: var(--vox-text-primary);
+    font-family: 'Inter', sans-serif;
+}
+
+/* The "Softness" Rule */
+.vox-context button,
+.vox-context .card,
+.vox-context .input,
+.vox-context .image-container {
+    border-radius: var(--vox-radius-sm);
+}
+
+/* Glassmorphism for Sidebar and Navigation */
+.vox-context .app-sidebar,
+.vox-context .app-header {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: color-mix(in srgb, var(--vox-bg-primary), transparent 20%);
+    border-bottom: 1px solid var(--vox-divider);
+}
+
+/* Elevation States */
+.vox-elevation-hover {
+    transition: var(--vox-transition-smooth);
+}
+
+/* Dark Mode Hover Glow */
+.vox-elevation-hover:hover {
+    box-shadow: inset 0 0 10px var(--vox-accent-glow);
+}
+
+/* Light Mode Hover Shadow */
+body.light-mode .vox-elevation-hover:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+/* Interactive States */
+.vox-interactive {
+    transition: var(--vox-transition-smooth);
+}
+
+.vox-interactive:hover {
+    transform: scale(1.02);
+}
+
+.vox-interactive:active {
+    transform: scale(0.95);
+    /* Squish effect */
+}
+
+/* Gold Accent Driver */
+.vox-accent-gold {
+    color: var(--vox-brand-gold);
+}
+
+.vox-btn-gold {
+    background-color: var(--vox-brand-gold);
+    color: #080C16;
+    /* Midnight Ink */
+    font-weight: 600;
+}
+
+.vox-btn-gold:hover {
+    filter: brightness(1.1);
+}
+
+/* Navigation Link Underline Animation */
+.vox-nav-link {
+    position: relative;
+    text-decoration: none;
+    color: var(--vox-text-secondary);
+}
+
+.vox-nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: var(--vox-brand-gold);
+    transition: width 0.3s ease, left 0.3s ease;
+}
+
+.vox-nav-link:hover::after,
+.vox-nav-link.active::after {
+    width: 100%;
+    left: 0;
+}
+
+.vox-nav-link:hover {
+    color: var(--vox-brand-gold);
+}

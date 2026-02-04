@@ -19,6 +19,14 @@
     right: 0;
     z-index: 50;
     box-shadow: var(--shadow-sm);
+    transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+.vox-context .app-header {
+    background-color: color-mix(in srgb, var(--vox-bg-primary), transparent 10%) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid var(--vox-divider) !important;
 }
 
 .header-content {
@@ -71,7 +79,6 @@
 .app-sidebar {
     width: 260px;
     background: var(--color-surface);
-    /* Uses theme variable */
     opacity: 0.95;
     backdrop-filter: blur(20px);
     border-right: 1px solid var(--color-border);
@@ -82,7 +89,14 @@
     overflow-y: auto;
     padding: 2rem 0;
     z-index: 100;
-    /* Increased z-index to be above main content */
+    transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+.vox-context .app-sidebar {
+    background-color: color-mix(in srgb, var(--vox-bg-primary), transparent 10%) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-right: 1px solid var(--vox-divider) !important;
 }
 
 .sidebar-nav {
@@ -100,7 +114,6 @@
     color: var(--color-text-muted);
     text-decoration: none;
     font-size: 0.95rem;
-    /* Restored original size */
     font-weight: 600;
     border-radius: 12px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -122,13 +135,43 @@
     transform: translateX(2px);
 }
 
-.nav-link.active {
-    background: linear-gradient(90deg, rgba(255, 77, 109, 0.1) 0%, transparent 100%);
+.nav-link.active .nav-icon {
     color: var(--color-primary);
 }
 
-.nav-link.active .nav-icon {
-    color: var(--color-primary);
+/* Vox specific nav links */
+.vox-context .nav-link {
+    color: var(--vox-text-secondary);
+    position: relative;
+    overflow: hidden;
+}
+
+.vox-context .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: var(--vox-brand-gold);
+    transition: width 0.3s ease, left 0.3s ease;
+}
+
+.vox-context .nav-link:hover::after,
+.vox-context .nav-link.active::after {
+    width: 100%;
+    left: 0;
+}
+
+.vox-context .nav-link:hover,
+.vox-context .nav-link.active {
+    color: var(--vox-brand-gold);
+    background: transparent;
+}
+
+.vox-context .nav-link:hover .nav-icon,
+.vox-context .nav-link.active .nav-icon {
+    color: var(--vox-brand-gold);
 }
 
 .sidebar-divider {
@@ -146,7 +189,6 @@
 .app-main {
     flex: 1;
     margin-left: 260px;
-    /* Matched to sidebar width */
     padding: 2rem;
     overflow-y: auto;
     background-color: var(--color-bg-dark);

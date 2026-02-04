@@ -1,0 +1,49 @@
+.vox-tweet-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.vox-action-btn {
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--vox-text-secondary);
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.vox-action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Like button */
+.vox-action-btn.vox-like:hover {
+    color: var(--vox-brand-red);
+    background-color: rgba(230, 74, 94, 0.05);
+}
+
+.vox-action-btn.vox-like.liked {
+    color: var(--vox-brand-red);
+}
+
+.vox-action-btn.vox-like.liked .filled {
+    fill: var(--vox-brand-red);
+}
+
+/* Edit button */
+.vox-action-btn.vox-edit:hover {
+    color: var(--vox-brand-gold);
+    background-color: rgba(212, 175, 55, 0.05);
+}
+
+/* Delete button */
+.vox-action-btn.vox-delete:hover {
+    color: #ff4444;
+    background-color: rgba(255, 68, 68, 0.05);
+}

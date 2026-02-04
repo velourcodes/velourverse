@@ -10,7 +10,18 @@ const Layout = () => {
     const isHomePage = location.pathname === '/';
 
     // Determine context
-    const isVox = location.pathname.startsWith('/tweets');
+    const searchParams = new URLSearchParams(location.search);
+    const isVoxQuery = searchParams.get('context') === 'vox';
+
+    const isVox = isVoxQuery ||
+        location.pathname.startsWith('/tweets') ||
+        location.pathname.startsWith('/explore') ||
+        location.pathname.startsWith('/notifications') ||
+        location.pathname.startsWith('/trending') ||
+        location.pathname.startsWith('/my-tweets-vox') ||
+        location.pathname.startsWith('/create-tweet') ||
+        location.pathname.startsWith('/edit-tweet') ||
+        location.pathname.startsWith('/delete-all-tweets');
     const context = isVox ? 'vox' : 'vortex';
 
     return (
@@ -22,7 +33,7 @@ const Layout = () => {
                     <Outlet />
                 </main>
             </div>
-            <PlatformSwitcher />
+            {!isHomePage && <PlatformSwitcher context={context} />}
         </div>
     );
 };

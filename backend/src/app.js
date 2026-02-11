@@ -5,11 +5,9 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 const app = express();
 
+import {corsOptions} from "./cors.js"
 app.use(
-    cors({
-        origin: process.env.CORS_ORIGIN, // e.g. "http://localhost:4500"
-        credentials: true,
-    })
+    cors(corsOptions)
 ); // allows cookies/ auth tokens to be sent
 
 app.use(express.json({ limit: "16kb" }));

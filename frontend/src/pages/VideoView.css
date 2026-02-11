@@ -354,10 +354,52 @@
 .recommended-list {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: 1rem;
 }
 
-/* Redundant styles removed: .recommended-card, .recommended-thumbnail-wrapper, etc. */
+/* Override VideoCard for Sidebar Mini-List style */
+.recommended-list .video-card-list {
+    padding: 0;
+    gap: 0.8rem;
+    background: transparent !important;
+}
+
+.recommended-list .card-thumbnail-wrapper-list {
+    width: 180px;
+    /* Adjusted to be slightly larger than 168 but still mini */
+    aspect-ratio: 16/9;
+}
+
+.recommended-list .card-title-list {
+    font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.3;
+}
+
+.recommended-list .card-channel-list {
+    margin: 0;
+    gap: 0.5rem;
+}
+
+.recommended-list .card-avatar-list {
+    width: 20px;
+    height: 20px;
+}
+
+.recommended-list .card-channel-name-list,
+.recommended-list .card-meta-list {
+    font-size: 0.8rem;
+}
+
+.recommended-list .card-desc-list {
+    display: none;
+    /* Hide description in narrow sidebar */
+}
 
 @keyframes fadeIn {
     from {
